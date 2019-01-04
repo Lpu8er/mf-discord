@@ -7,6 +7,7 @@
         "ext-iconv": "*",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/console": "4.2.*",
+        "symfony/debug": "4.2.*",
         "symfony/dotenv": "4.2.*",
         "symfony/flex": "^1.1",
         "symfony/form": "4.2.*",
@@ -63,6 +64,8 @@
         }
     },
     "require-dev": {
-        "symfony/maker-bundle": "^1.9"
+        "symfony/maker-bundle": "^1.9",
+        "symfony/phpunit-bridge": "4.2.*",
+        "symfony/profiler-pack": "^1.0"
     }
 }
