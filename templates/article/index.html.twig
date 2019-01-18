@@ -3,6 +3,12 @@
 {% block title %}Article index{% endblock %}
 
 {% block body %}
-    <h1>Article index</h1>
-    
+    <h2>Les dernières news de Minefield</h2>
+    <section>
+        {% for article in articles %}
+            <article>
+                <h3></h3>
+            </article>
+        {% endfor %}
+    </section>
 {% endblock %}

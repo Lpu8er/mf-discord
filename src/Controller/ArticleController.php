@@ -19,13 +19,18 @@ class ArticleController extends BaseController
      */
     public function index(Request $request, ArticleRepository $articleRepository): Response
     {
+        $pageLimit = 20; // @TODO configure the limit
+        $totalNb = $articleRepository->count([
+            'status' => Article::STATUS_PUBLISHED,
+        ]);
+        $totalPages = ceil($totalNb / $pageLimit);
         $o = $request->query->has('p')? (1 - max(1, intval($request->query->get('p')))):null;
         if(empty($o)) { $o = null; }
         return $this->render('article/index.html.twig', ['articles' => $articleRepository->findBy([
             'status' => Article::STATUS_PUBLISHED,
         ], [
             'datePublished' => 'DESC',
-        ], 20, $o)]); // @TODO soft code the limit
+        ], $pageLimit, $o)]);
     }
 
     /**
