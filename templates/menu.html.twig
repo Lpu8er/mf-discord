@@ -1,0 +1,36 @@
+<section>
+    <header>
+        <a href="{{ path('home') }}"><img src="" alt="Minefield" /></a>
+    </header>
+    <menu>
+        <li>
+            <a href="{{ path('home') }}">Minefield</a>
+            <menu>
+                <li>
+                    <a href="{{ path('static-discover') }}">
+                        Découvrez Minefield
+                    </a>
+                </li>
+            </menu>
+        </li>
+        <li>
+            <a href="{{ path('redirect', {'target': 'forum'}) }}">Communauté</a>
+            <menu>
+                <li>
+                    <a href="{{ path('redirect', {'target': 'forum'}) }}">
+                        Forum
+                    </a>
+                </li>
+            </menu>
+        </li>
+        {%  if app.user %}
+            <li>
+                Stuff
+            </li>
+        {% else %}
+            <li>
+                <a href="{{ path('redirect', {'target': 'forum-login'}) }}">Connexion</a>
+            </li>
+        {% endif %}
+    </menu>
+</section>
