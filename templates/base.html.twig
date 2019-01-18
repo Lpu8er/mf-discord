@@ -7,13 +7,11 @@
     </head>
     <body>
         {% block header %}
-            MF
-            MENU
+            {% include 'menu.html.twig' %}
         {% endblock %}
         {% block body %}{% endblock %}
         {% block footer %}
-            MF
-            CONTACT
+            {% include 'foot.html.twig' %}
         {% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
