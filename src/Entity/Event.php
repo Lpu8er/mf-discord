@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\EventRepository")
  * @ORM\Table("events")
  */
-class Event {
+class Event implements \JsonSerializable {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -78,6 +78,8 @@ class Event {
      * @ORM\Column(type="integer")
      */
     protected $category;
+    
+    protected $color = '';
 
     public function getId(): ?int
     {
@@ -226,5 +228,52 @@ class Event {
         $this->category = $category;
 
         return $this;
+    }
+    
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): self
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+    
+    
+    /**
+     * 
+     * @return array
+     */
+    public function jsonSerialize() {
+        return [
+            'id' => $this->getId(),
+            'link' => htmlspecialchars($this->getLink()),
+            'name' => htmlspecialchars($this->getName()),
+            'start' => empty($this->getStart())? null:$this->getStart(),
+            'end' => empty($this->getEnd())? null:$this->getEnd(),
+            'publicDescription' => htmlspecialchars($this->getPublicDescription()),
+            'contact' => htmlspecialchars($this->getContact()),
+            'subscriptionEnabled' => !!$this->getSubscriptionEnabled(),
+            'subscribeMaxDate' => empty($this->getSubscribeMaxDate())? null:$this->getSubscribeMaxDate(),
+            'title' => $this->formatTitle(),
+        ];
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    protected function formatTitle() {
+        $sDate = DateTime::createFromFormat('Y-m-d H:i:s', $this->getStart());
+        if(empty($this->getEnd())) {
+            $returns = 'Depuis le '.$sDate->format('d/m/Y H:i');
+        } else {
+            $eDate = DateTime::createFromFormat('Y-m-d H:i:s', $this->getEnd());
+            $returns = 'Du '.$sDate->format('d/m/Y H:i').' au '.$eDate->format('d/m/Y H:i');
+        }
+        return $returns;
     }
 }

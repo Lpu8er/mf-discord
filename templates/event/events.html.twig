@@ -1,0 +1,275 @@
+{% extends 'base.html.twig' %}
+{% block title %}Événements minefieldiens{% endblock %}
+{% block body %}
+<div id="eventsPage">
+    <h1>Événements minefieldiens</h1>
+    <p>
+        Passés, présents, futurs, les événements minefieldiens prévus !
+        <em>Cliquez sur un événement pour en savoir plus !</em>
+    </p>
+    <form method="post">
+        <p>
+            <label for="eventsFilter">Que se passe-t'il durant le mois de...</label>
+            <input type="month"
+                   id="eventsFilter"
+                   name="filter"
+                   pattern="[0-9]{4}-[0-9]{2}"
+                   placeholder="YYYY-MM"
+                   value="{{ year }}-{{ month }}" />
+            <input type="submit" value="Voir les événements de ce mois" />
+        </p>
+    </form>
+    <fieldset class="eventLayer" style="display: none">
+        <legend></legend>
+        <p class="event-dates"></p>
+        <p class="event-publicDesc"></p>
+        <p class="event-contact"></p>
+        <p class="event-subscribe"></p>
+        <p class="event-link"><a href="#" class="externalLink"></a></p>
+    </fieldset>
+    <ul class="eventsList">
+        {% for day,es in splitted %}<li>
+            <h2>{{ day|date('d/m/Y') }}</h2>
+            {% for eid in es %}
+            <div style="background-color: #{{ attribute(attribute(events, eid), 'getColor') }};"
+                 data-event="{{ eid }}"
+                 class="event-ind"
+                 title="{{ attribute(attribute(events, eid), 'getTitle') }}">
+                {{ attribute(attribute(events, eid), 'getName') }}
+            </div>{% endfor %}
+        </li>{% endfor %}
+    </ul>
+</div>{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript">
+    var mfEventsManager = {
+        storage: {
+            events: {},
+            wasTriggered: false
+        },
+        utils: {
+            formatEventKey: function(ei) {
+                return 'e_'+ei;
+            },
+            /**
+             * Javascript, why so harsh ?
+             * @param {String} strDate
+             * @returns {Date}
+             */
+            createDate: function(strDate) {
+                var x = strDate.split(' ');
+                var dx = x[0].split('-');
+                var tx = x[1].split(':');
+                return new Date(dx[0], ((0 + dx[1]) - 1), dx[2], tx[0], tx[1], tx[2]);
+            },
+            /**
+             * Javascript, why so poor ?
+             * @param {String} format
+             * @param {Date} d
+             * @returns {String}
+             */
+            formatDate: function(format, d) {
+                var r = '';
+                for(var i=0; i<format.length; i++) {
+                    var f = format[i]; var c = f;
+                    if('y' === f) {
+                        c = d.getFullYear();
+                    } else if('m' === f) {
+                        c = mfEventsManager.utils.lpad(1 + d.getMonth(), 2, '0'); // sic
+                    } else if('d' === f) {
+                        c = mfEventsManager.utils.lpad(d.getDate(), 2, '0');
+                    } else if('h' === f) {
+                        c = mfEventsManager.utils.lpad(d.getHours(), 2, '0');
+                    } else if('i' === f) {
+                        c = mfEventsManager.utils.lpad(d.getMinutes(), 2, '0');
+                    } else if('s' === f) {
+                        c = mfEventsManager.utils.lpad(d.getSeconds(), 2, '0');
+                    }
+                    r+=c;
+                }
+                return r;
+            },
+            lpad: function(str, len, pad) {
+                var r = new String(str);
+                for(var i=0; (r.length + i < len); i++) {
+                    r = pad+r;
+                }
+                return r;
+            }
+        },
+        actions: {
+            showEventLayer: function(eventId) {
+                var ed = mfEventsManager.storage.events[mfEventsManager.utils.formatEventKey(eventId)];
+                if('undefined' !== typeof(ed)) {
+                    jQuery('.eventLayer legend').text(ed.name);
+                    
+                    var eventDates = '';
+                    var sDate = mfEventsManager.utils.createDate(ed.start);
+                    if(null === ed.end) {
+                        eventDates = 'Depuis le '+mfEventsManager.utils.formatDate('d/m/y h:i', sDate);
+                    } else {
+                        var eDate = mfEventsManager.utils.createDate(ed.end);
+                        eventDates = 'Du '+mfEventsManager.utils.formatDate('d/m/y h:i', sDate)+ ' au '+mfEventsManager.utils.formatDate('d/m/y h:i', eDate);
+                    }
+                    jQuery('.eventLayer .event-dates').text(eventDates);
+                    
+                    if(null !== ed.publicDescription) {
+                        jQuery('.eventLayer .event-publicDesc').text(ed.publicDescription);
+                    } else {
+                        jQuery('.eventLayer .event-publicDesc').text('');
+                    }
+                    if(null !== ed.contact) {
+                        jQuery('.eventLayer .event-contact').html('Contact : '+ed.contact);
+                    } else {
+                        jQuery('.eventLayer .event-contact').text('');
+                    }
+                    if(ed.subscriptionEnabled && ('0' !== ed.subscriptionEnabled)) {
+                        jQuery('.eventLayer .event-subscribe').text('Inscriptions jusqu\'au '+ed.subscribeMaxDate);
+                    } else {
+                        jQuery('.eventLayer .event-subscribe').text('Aucune inscription');
+                    }
+                    if(null !== ed.link) {
+                        jQuery('.eventLayer .event-link a').text(ed.link);
+                        jQuery('.eventLayer .event-link a').attr('href', ed.link);
+                    } else {
+                        jQuery('.eventLayer .event-link a').text('');
+                        jQuery('.eventLayer .event-link a').attr('href', '#');
+                    }
+                    
+                    if(mfEventsManager.storage.wasTriggered) {
+                        jQuery('.eventLayer').fadeIn('slow');
+                    } else {
+                        jQuery('.eventLayer').show('slow');
+                    }
+                    mfEventsManager.storage.wasTriggered = true;
+                }
+            },
+            hideEventLayer: function(callback) {
+                if(jQuery('.eventLayer').is(':visible')) {
+                    if(('undefined' !== typeof(callback)) && (null !== callback)) {
+                        if(mfEventsManager.storage.wasTriggered) {
+                            jQuery('.eventLayer').fadeOut('fast', callback);
+                        } else {
+                            jQuery('.eventLayer').hide('fast');
+                            callback();
+                        }
+                    } else {
+                        if(mfEventsManager.storage.wasTriggered) {
+                            jQuery('.eventLayer').fadeOut('fast');
+                        } else {
+                            jQuery('.eventLayer').hide('fast');
+                        }
+                    }
+                } else if(('undefined' !== typeof(callback)) && (null !== callback)) {
+                    callback();
+                }
+            }
+        },
+        handlers: {
+            clickShow: function($el) {
+                var ei = $el.attr('data-event');
+                mfEventsManager.actions.hideEventLayer(function(){mfEventsManager.actions.showEventLayer(ei);});
+            },
+            blurLayer: function($el) {
+                mfEventsManager.actions.hideEventLayer();
+            }
+        },
+        handleEvents: function() {
+            jQuery(document).on('click', '.event-ind', function() {
+                mfEventsManager.handlers.clickShow(jQuery(this));
+                return true;
+            });
+            jQuery(document).on('click', '.externalLink', function(){
+                var a = jQuery(this).attr('href');
+                window.open(a);
+                return false;
+            });
+        },
+        init: function(events) {
+            for(var p in events) {
+                mfEventsManager.storage.events[mfEventsManager.utils.formatEventKey(p)] = events[p];
+            }
+            mfEventsManager.handleEvents();
+        }
+    };
+    
+    jQuery(function(){
+        mfEventsManager.init({{ events|json_encode()|raw }}); ?>);
+    });
+</script>
+{% endblock %}
+{% block stylesheets %}
+<style type="text/css">
+    #eventsPage {
+        background: #FFFFFF;
+        margin-top: 32px;
+        padding: 32px;
+        position: relative;
+    }
+    
+    #eventsPage h1 {
+        margin: auto;
+        text-align: center;
+        font-family: Economica;
+        font-weight: bold;
+        font-size: 28px;
+        font-variant: small-caps;
+        text-transform: uppercase;
+    }
+    
+    .eventsList {
+        display: block;
+        padding: 0px;
+        margin: 0px;
+        width: 100%;
+        list-style-type: none;
+        vertical-align: top;
+    }
+    
+    .eventsList li {
+        display: inline-block;
+        width: 14%;
+        height: 350px;
+        padding: 3px;
+        margin: 0px;
+        background-color: #fafafa;
+        border: 1px solid #e8e8e8;
+        vertical-align: top;
+        overflow: auto;
+    }
+    
+    .eventsList li h2 {
+        margin: 0px;
+        padding: 0px;
+        width: 100%;
+        font-weight: bold;
+        text-align: center;
+        background-color: #e8e8e8;
+        padding: 2px;
+    }
+    
+    .eventsList li .event-ind {
+        padding: 6px;
+        margin: 0px;
+        font-size: small;
+        cursor: pointer;
+    }
+    
+    .eventLayer {
+        border: 1px solid #f0f0f0;
+        background-color: #f0f0f0;
+        box-shadow: 1px 1px 2px 2px #eaeaea;
+        padding: 15px;
+        margin: 15px;
+    }
+    
+    .eventLayer legend {
+        border: 1px solid #f0f0f0;
+        background-color: #f0f0f0;
+        font-weight: bold;
+    }
+    
+</style>
+{% endblock %}
