@@ -31,7 +31,7 @@ class EventController extends BaseController {
         $rs['events'] = $eventRepository->retrieveForMonth($rs['year'], $rs['month']);
         $rs['splitted'] = $eventRepository->splitEvents($rs['year'], $rs['month'], $rs['events']);
 
-        $colorPalette = array();
+        $colorPalette = [];
         $findColor = function($palette){
             $mi = 10; $ai = 0;
             do {
