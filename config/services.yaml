@@ -6,6 +6,7 @@
 parameters:
     uri.forum: '%env(FORUM_URI)%'
     uri.codex: '/src/codex'
+    uri.discordinvite: 'https://discord.gg'
 
 services:
     # default configuration for services in *this* file
@@ -44,5 +45,15 @@ services:
             $aliases:
                 hi: hello
     
+    discordgroom:
+        class: App\Service\DiscordGroom
+        arguments:
+            $uri: '%env(DISCORD_URL)%'
+            $token: '%env(DISCORD_TOKEN)%'
+            $scope: '%env(DISCORD_BOT_SCOPE)%'
+            $guildId: '%env(DISCORD_GUILD_ID)%'
+            $baseChannel: '%env(DISCORD_BASE_CHANNEL)%'
+    
     App\Service\Discord: '@discord'
+    App\Service\DiscordGroom: '@discordgroom'
     

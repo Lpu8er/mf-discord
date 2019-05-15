@@ -18,7 +18,7 @@ use React\Socket\Connector as ReactConnector;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Description of Discord
+ * Discord BOT service
  *
  * @author lpu8er
  */
@@ -418,6 +418,7 @@ class Discord {
             // TODO stuff on preload to init server caching
             
         } elseif(static::EVENT_MESSAGE_CREATE === $event) {
+            var_dump($data);
             $this->parseMessage($data);
         } elseif(in_array($event, [
             static::EVENT_PRESENCE_UPDATE,
