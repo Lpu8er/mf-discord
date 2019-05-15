@@ -8,7 +8,7 @@ namespace App\Utils\DiscordCommand;
  */
 class DiscordHelpCommand extends DiscordCommand {
     public function help(\App\Service\Discord $discordService) {
-        $discordService->talk('`.help <cmd>` give some help about `<cmd>` command', $this->data['channel_id']);
+        $discordService->talk('`'.$discordService->getPrefix().'help <cmd>` give some help about `<cmd>` command', $this->data['channel_id']);
     }
     
     protected function loadHelp($cmd, \App\Service\Discord $discordService) {
@@ -39,7 +39,7 @@ class DiscordHelpCommand extends DiscordCommand {
             foreach($discordService->getAllowedCommands() as $c) {
                 $msg[] = '**'.$c.'**';
             }
-            $discordService->talk('Available commands : '.implode(', ', $msg).' (use `.help <cmd>` to have more information about a command)', $this->data['channel_id']);
+            $discordService->talk('Available commands : '.implode(', ', $msg).' (use `'.$discordService->getPrefix().'help <cmd>` to have more information about a command)', $this->data['channel_id']);
         }
     }
 }

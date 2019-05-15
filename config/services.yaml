@@ -37,6 +37,7 @@ services:
             $token: '%env(DISCORD_TOKEN)%'
             $scope: '%env(DISCORD_BOT_SCOPE)%'
             $channel: '%env(DISCORD_BOT_CHANNEL)%'
+            $prefix: '%env(DISCORD_BOT_CMDPREFIX)%'
             $allowedCommands:
                 - hello
                 - help

@@ -84,6 +84,12 @@ class Discord {
     
     /**
      *
+     * @var string
+     */
+    protected $prefix = null;
+    
+    /**
+     *
      * @var array
      */
     protected $allowedCommands = [];
@@ -180,16 +186,33 @@ class Discord {
      * @param string $token
      * @param string $scope
      */
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, $uri, $token, $scope, $channel, $allowedCommands, $aliases) {
+    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, $uri, $token, $scope, $channel, $prefix, $allowedCommands, $aliases) {
         $this->em = $em;
         $this->uri = $uri;
         $this->token = $token;
         $this->scope = $scope;
         $this->channel = $channel;
+        $this->prefix = $prefix;
         $this->allowedCommands = $allowedCommands;
         $this->aliases = $aliases;
         $this->logger = $logger;
         $this->startDate = new DateTime;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getPrefix(): string {
+        return $this->prefix;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getEscapedPrefix(): string {
+        return preg_quote($this->prefix);
     }
     
     /**
@@ -417,7 +440,7 @@ class Discord {
         $matches = [];
         if(!$data['tts']
                 && (empty($this->channel) || ($data['channel_id'] === $this->channel))
-                && preg_match('`^\.([a-zA-Z0-9]+)(( +)(.+))?$`', $data['content'], $matches)) { // @TODO better includes of "." as joker
+                && preg_match('`^'.$this->getEscapedPrefix().'([a-zA-Z0-9]+)(( +)(.+))?$`', $data['content'], $matches)) { // @TODO better includes of "." as joker
             $this->parseCommand($matches[1], empty($matches[4])? []:explode(' ', $matches[4]), $data);
         }
     }
