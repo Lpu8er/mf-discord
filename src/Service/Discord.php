@@ -46,6 +46,7 @@ class Discord {
     const EVENT_PRESENCES_REPLACE = 'PRESENCES_REPLACE';
     const EVENT_MESSAGE_REACTION_ADD = 'MESSAGE_REACTION_ADD';
     const EVENT_CHANNEL_PINS_UPDATE = 'CHANNEL_PINS_UPDATE';
+    const EVENT_GUILD_ROLE_UPDATE = 'GUILD_ROLE_UPDATE';
     
     const INTERVAL_MESSAGEQUEUES = 10;
     
@@ -423,7 +424,8 @@ class Discord {
             static::EVENT_TYPING_START,
             static::EVENT_MESSAGE_UPDATE,
             static::EVENT_MESSAGE_REACTION_ADD,
-            static::PRESENCES_REPLACE,])) { // ignored events
+            static::EVENT_PRESENCES_REPLACE,
+            static::EVENT_GUILD_ROLE_UPDATE,])) { // ignored events
             
         } else { // monitored events
             $this->consoleLog('Received event "'.$event.'" (trace below)');
