@@ -30,3 +30,18 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    discord:
+        class: App\Service\Discord
+        arguments:
+            $uri: '%env(DISCORD_URL)%'
+            $token: '%env(DISCORD_TOKEN)%'
+            $scope: '%env(DISCORD_BOT_SCOPE)%'
+            $channel: '%env(DISCORD_BOT_CHANNEL)%'
+            $allowedCommands:
+                - hello
+                - help
+            $aliases:
+                hi: hello
+    
+    App\Service\Discord: '@discord'
+    
