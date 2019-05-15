@@ -441,9 +441,13 @@ class Discord {
         // check if that's a bot message
         $matches = [];
         if(!$data['tts']
-                && (empty($this->channel) || ($data['channel_id'] === $this->channel))
-                && preg_match('`^'.$this->getEscapedPrefix().'([a-zA-Z0-9]+)(( +)(.+))?$`', $data['content'], $matches)) { // @TODO better includes of "." as joker
-            $this->parseCommand($matches[1], empty($matches[4])? []:explode(' ', $matches[4]), $data);
+                && (0 == $data['type'])
+                && preg_match('`^'.$this->getEscapedPrefix().'([a-zA-Z0-9]+)(( +)(.+))?$`', $data['content'], $matches)) { // 0 = message
+            if(empty($data['guild_id'])) { // private message
+                $this->parseCommand($matches[1], empty($matches[4])? []:explode(' ', $matches[4]), $data, true);
+            } elseif(empty($this->channel) || ($data['channel_id'] === $this->channel)) { // bot only listen some channels
+                $this->parseCommand($matches[1], empty($matches[4])? []:explode(' ', $matches[4]), $data, false);
+            }
         }
     }
     
@@ -452,8 +456,9 @@ class Discord {
      * @param string $cmd
      * @param array $args
      * @param array $pureData
+     * @param bool $private
      */
-    protected function parseCommand(string $cmd, array $args, array $pureData) {
+    protected function parseCommand(string $cmd, array $args, array $pureData, bool $private = false) {
         if($this->isAllowedCommand($cmd)) {
             try {
                 $cmd = $this->getAliasedCommand($cmd);
@@ -470,7 +475,7 @@ class Discord {
                 $this->talk('An error occured, please retry later', $pureData['channel_id']);
             }
         } else {
-            $this->talk('Unrecognized command `'.$cmd.'`');
+            $this->talk('Unrecognized command `'.$cmd.'`', $pureData['channel_id']);
         }
     }
     
