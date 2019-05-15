@@ -53,6 +53,7 @@ services:
             $scope: '%env(DISCORD_BOT_SCOPE)%'
             $guildId: '%env(DISCORD_GUILD_ID)%'
             $baseChannel: '%env(DISCORD_BASE_CHANNEL)%'
+            $maxAge: 3600
     
     App\Service\Discord: '@discord'
     App\Service\DiscordGroom: '@discordgroom'

@@ -1,6 +1,10 @@
 <?php
 namespace App\Service;
 
+use App\Utils\REST;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+
 /**
  * Description of DiscordGroom
  *

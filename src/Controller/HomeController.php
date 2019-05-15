@@ -2,17 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\DiscordInvite;
+use App\Service\DiscordGroom;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends BaseController
 {
     /**
      *
-     * @var \App\Service\DiscordGroom 
+     * @var DiscordGroom 
      */
     protected $groom;
     
-    public function __construct(\App\Service\DiscordGroom $groom) {
+    public function __construct(DiscordGroom $groom) {
         ;
     }
     
@@ -25,10 +27,10 @@ class HomeController extends BaseController
     }
     
     /**
-     * 
+     * @Route("/discord", name="discord")
      */
     public function discord() {
-        $rep = $this->getDoctrine()->getRepository(\App\Entity\DiscordInvite::class);
+        $rep = $this->getDoctrine()->getRepository(DiscordInvite::class);
         $di = $rep->generate($this->getUser());
         $link = null;
         if(!empty($di)) {
@@ -47,7 +49,7 @@ class HomeController extends BaseController
                 $link = $di->getLink();
             }
         }
-        return $this->render('home/index.html.twig', [
+        return $this->render('home/discord.html.twig', [
             'errors' => [],
             'link' => $link,
         ]);
