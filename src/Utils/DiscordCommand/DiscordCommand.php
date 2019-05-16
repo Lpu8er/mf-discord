@@ -1,7 +1,9 @@
 <?php
 namespace App\Utils\DiscordCommand;
 
+use App\Entity\User;
 use App\Service\Discord;
+use Exception;
 
 /**
  * Description of DiscordCommand
@@ -66,6 +68,34 @@ abstract class DiscordCommand {
     
     final public function getName() {
         return $this->name;
+    }
+    
+    /**
+     * Get current discord user, if any (webhooks and bots excluded)
+     * @return array|null
+     */
+    final protected function getCurrentDiscordUser(): ?array {
+        return (!empty($this->data['author'])
+                && !empty($this->data['author']['id'])
+                && empty($this->data['webhook_id'])
+                && empty($this->data['author']['bot']))? $this->data['author']:null;
+    }
+    
+    /**
+     * Get currenly linked user to current discord user if any.
+     * @param Discord $discordService
+     * @return User
+     */
+    final protected function checkAuthLink(Discord $discordService): ?User {
+        $u = null;
+        $cu = $this->getCurrentDiscordUser();
+        $userRepo = $discordService->getEntityManager()->getRepository(User::class);
+        try {
+            $u = $userRepo->findOneBy(['discordId' => $cu['id'],]);
+        } catch(Exception $e) {
+            $u = null;
+        }
+        return $u;
     }
     
     abstract public function help(Discord $discordService);

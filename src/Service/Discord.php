@@ -47,6 +47,7 @@ class Discord {
     const EVENT_MESSAGE_REACTION_ADD = 'MESSAGE_REACTION_ADD';
     const EVENT_CHANNEL_PINS_UPDATE = 'CHANNEL_PINS_UPDATE';
     const EVENT_GUILD_ROLE_UPDATE = 'GUILD_ROLE_UPDATE';
+    const EVENT_CHANNEL_CREATE = 'CHANNEL_CREATE';
     
     const INTERVAL_MESSAGEQUEUES = 10;
     
@@ -182,16 +183,29 @@ class Discord {
     protected $lastAck = true;
     
     /**
+     *
+     * @var type 
+     */
+    protected $me = null;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $guildId = null;
+    
+    /**
      * 
      * @param string $uri
      * @param string $token
      * @param string $scope
      */
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, $uri, $token, $scope, $channel, $prefix, $allowedCommands, $aliases) {
+    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, $uri, $token, $scope, $guildId, $channel, $prefix, $allowedCommands, $aliases) {
         $this->em = $em;
         $this->uri = $uri;
         $this->token = $token;
         $this->scope = $scope;
+        $this->guildId = $guildId;
         $this->channel = $channel;
         $this->prefix = $prefix;
         $this->allowedCommands = $allowedCommands;
@@ -416,17 +430,22 @@ class Discord {
             $this->sessionId = $data['session_id']; // we shall keep it in a file or whatever
         } elseif(static::EVENT_GUILD_CREATE === $event) {
             // TODO stuff on preload to init server caching
-            
+            foreach($data['roles'] as $role) {
+                $this->rolesCache[$role['id']] = $role['name'];
+            }
+            $this->me = $this->me();
         } elseif(static::EVENT_MESSAGE_CREATE === $event) {
-            var_dump($data);
             $this->parseMessage($data);
+        } elseif(static::EVENT_CHANNEL_CREATE === $event) {
+            // discord re-send the channel_create event when the bot is replying, and does not send a different data payload
+            // that's prolly a side-effect of their channel/message creation behaviour, so we gonna need to fix it some time later
         } elseif(in_array($event, [
             static::EVENT_PRESENCE_UPDATE,
             static::EVENT_TYPING_START,
             static::EVENT_MESSAGE_UPDATE,
             static::EVENT_MESSAGE_REACTION_ADD,
             static::EVENT_PRESENCES_REPLACE,
-            static::EVENT_GUILD_ROLE_UPDATE,])) { // ignored events
+            static::EVENT_GUILD_ROLE_UPDATE,])) { // ignored events (for now)
             
         } else { // monitored events
             $this->consoleLog('Received event "'.$event.'" (trace below)');
@@ -446,7 +465,8 @@ class Discord {
                 && preg_match('`^'.$this->getEscapedPrefix().'([a-zA-Z0-9]+)(( +)(.+))?$`', $data['content'], $matches)) { // 0 = message
             if(empty($data['guild_id'])) { // private message
                 $this->parseCommand($matches[1], empty($matches[4])? []:explode(' ', $matches[4]), $data, true);
-            } elseif(empty($this->channel) || ($data['channel_id'] === $this->channel)) { // bot only listen some channels
+            } elseif(empty($this->channel)
+                    || ($data['channel_id'] === $this->channel)) { // bot only listen some channels
                 $this->parseCommand($matches[1], empty($matches[4])? []:explode(' ', $matches[4]), $data, false);
             }
         }
@@ -532,6 +552,17 @@ class Discord {
         $this->disableDelay();
         $this->talk(implode(PHP_EOL, $this->flushableTalks), $channelId);
         $this->flushableTalks = [];
+    }
+    
+    /**
+     * 
+     * @return array|null
+     */
+    public function me(): ?array {
+        $response = REST::json($this->uri, '/users/@me', REST::METHOD_GET, [], [
+            'Authorization' => 'Bot '.$this->token,
+        ]);
+        return $response->isValid()? $response->getContent():null;
     }
     
     /**
@@ -625,7 +656,7 @@ class Discord {
      * @param bool $ignoreCache
      * @return ?string
      */
-    protected function getRoleId(string $name, bool $ignoreCache = false) {
+    public function getRoleId(string $name, bool $ignoreCache = false) {
         $returns = null;
         if(!$ignoreCache && in_array($name, $this->rolesCache)) {
             $returns = array_search($name, $this->rolesCache);
@@ -635,38 +666,63 @@ class Discord {
         return $returns;
     }
     
-    public function registerUser(int $id, string $name, int $disc): DiscordUser {
-        $u = new DiscordUser;
-        $u->setDateAdd(new DateTime);
-        $u->setId($id);
-        $u->setDiscordName($name);
-        $u->setDiscriminator($disc);
-        return $this->saveUser($u);
+    /**
+     * 
+     * @param string $discordUserId
+     * @return array|null
+     */
+    public function getMember($discordUserId): ?array {
+        $response = REST::json($this->uri, '/guilds/'.$this->guildId.'/members/'.$discordUserId, REST::METHOD_GET, [], [
+            'Authorization' => 'Bot '.$this->token,
+        ]);
+        return $response->isValid()? $response->getContent():null;
     }
     
-    public function retrieveUser(int $id): ?DiscordUser {
-        $u = $this->em->getRepository(DiscordUser::class)->find($id);
-        return empty($u)? null:$u;
+    /**
+     * 
+     * @param string $userId
+     * @param string $roleId
+     */
+    public function removeRole($userId, $roleId) {
+        REST::json($this->uri, '/guilds/'.$this->guildId.'/members/'.$userId.'/roles/'.$roleId, REST::METHOD_DELETE, [], [
+            'Authorization' => 'Bot '.$this->token,
+        ]);
     }
     
-    public function updateUserName(DiscordUser $u, string $name, int $disc): DiscordUser {
-        $u->setDiscordName($name);
-        $u->setDiscriminator($disc);
-        return $this->saveUser($u);
+    /**
+     * 
+     * @param string $userId
+     * @param string $roleId
+     */
+    public function addRole($userId, $roleId) {
+        REST::json($this->uri, '/guilds/'.$this->guildId.'/members/'.$userId.'/roles/'.$roleId, REST::METHOD_PUT, [], [
+            'Authorization' => 'Bot '.$this->token,
+        ]);
     }
     
-    public function findOrCreateUser(int $id, string $name, int $disc): DiscordUser {
-        $u = $this->retrieveUser($id);
-        if(empty($u)) {
-            $u = $this->registerUser($id, $name, $disc);
+    /**
+     * 
+     * @param string $userId
+     * @param string $newName
+     */
+    public function renameMember($userId, $newName) {
+        REST::json($this->uri, '/guilds/'.$this->guildId.'/members/'.$userId, REST::METHOD_PATCH, [
+            'nick' => $newName,
+        ], [
+            'Authorization' => 'Bot '.$this->token,
+        ]);
+    }
+    
+    /**
+     * 
+     * @param string $channelId
+     */
+    public function startTyping($channelId) {
+        if(!empty($this->me)) {
+            REST::json($this->uri, '/channels/'.$channelId.'/typing', REST::METHOD_POST, [], [
+                'Authorization' => 'Bot '.$this->token,
+            ]);
         }
-        return $u;
-    }
-    
-    public function saveUser(DiscordUser $u) {
-        $this->em->persist($u);
-        $this->em->flush();
-        return $u;
     }
     
     /**

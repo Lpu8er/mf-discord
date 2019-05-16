@@ -7,6 +7,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Table("users")
  */
 class User implements UserInterface
 {
@@ -18,14 +19,40 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @ORM\Column(name="name", type="string", length=180, unique=true)
      */
     private $username;
+    
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $group;
 
     /**
-     * @ORM\Column(type="json")
+     * 
      */
     private $roles = [];
+    
+    /**
+     *
+     * @var string 
+     * @ORM\Column(type="string", length=200, nullable=true)
+     */
+    private $discordLinkCode = null;
+    
+    /**
+     *
+     * @var string 
+     * @ORM\Column(type="string", length=200, nullable=true)
+     */
+    private $discordUser = null;
+    
+    /**
+     *
+     * @var string 
+     * @ORM\Column(type="string", length=200, nullable=true)
+     */
+    private $discordId = null;
 
     public function getId(): ?int
     {
@@ -91,5 +118,53 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getDiscordLinkCode(): ?string
+    {
+        return $this->discordLinkCode;
+    }
+
+    public function setDiscordLinkCode(string $discordLinkCode): self
+    {
+        $this->discordLinkCode = $discordLinkCode;
+
+        return $this;
+    }
+
+    public function getDiscordUser(): ?string
+    {
+        return $this->discordUser;
+    }
+
+    public function setDiscordUser(?string $discordUser): self
+    {
+        $this->discordUser = $discordUser;
+
+        return $this;
+    }
+
+    public function getDiscordId(): ?string
+    {
+        return $this->discordId;
+    }
+
+    public function setDiscordId(?string $discordId): self
+    {
+        $this->discordId = $discordId;
+
+        return $this;
+    }
+
+    public function getGroup(): ?int
+    {
+        return $this->group;
+    }
+
+    public function setGroup(int $group): self
+    {
+        $this->group = $group;
+
+        return $this;
     }
 }

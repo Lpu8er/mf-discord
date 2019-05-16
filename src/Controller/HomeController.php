@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\DiscordInvite;
 use App\Service\DiscordGroom;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -15,7 +14,7 @@ class HomeController extends BaseController
     protected $groom;
     
     public function __construct(DiscordGroom $groom) {
-        ;
+        $this->groom = $groom;
     }
     
     /**
@@ -30,29 +29,29 @@ class HomeController extends BaseController
      * @Route("/discord", name="discord")
      */
     public function discord() {
-        $rep = $this->getDoctrine()->getRepository(DiscordInvite::class);
-        $di = $rep->generate($this->getUser());
-        $link = null;
-        if(!empty($di)) {
-            $did = $di->getId();
-            if(empty($did)) { // generate a single
-                $inviteData = $this->groom->generateSingleInvite();
-                if(!empty($inviteData)) {
-                    $link = rtrim($this->getParameter('uri.discordinvite'),'/').'/'.$inviteData['code'];
-                    $di->setId($inviteData['code']);
-                    $di->setLnk($link);
-                    $di->setUser($this->getUser());
-                    $rep->persist($di);
-                    $rep->flush();
-                }
-            } else {
-                $link = $di->getLink();
-            }
+        //$u = $this->getDoctrine()->getRepository(\App\Entity\User::class)->findOneByUsername('Lpu8er');
+        //$u = $this->getDoctrine()->getRepository(\App\Entity\User::class)->findOneByUsername('Mopitio');
+        //$u = $this->getDoctrine()->getRepository(\App\Entity\User::class)->findOneByUsername('KillerMapper');
+        $u = $this->getDoctrine()->getRepository(\App\Entity\User::class)->findOneByUsername('Yann291');
+        $code = $this->groom->prepareLinkCode($u);
+        
+        $ups = [];
+        for($i = 0; $i<50; $i++) {
+            $ups[] = $this->groom->generatePseudoRandom();
         }
+        
         return $this->render('home/discord.html.twig', [
             'errors' => [],
-            'link' => $link,
+            'code' => $code,
+            'ups' => $ups,
         ]);
+    }
+    
+    /**
+     * @Route("/t", name="t")
+     */
+    public function t(){
+        
     }
     
     /**
