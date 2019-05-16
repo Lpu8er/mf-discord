@@ -29,10 +29,7 @@ class HomeController extends BaseController
      * @Route("/discord", name="discord")
      */
     public function discord() {
-        //$u = $this->getDoctrine()->getRepository(\App\Entity\User::class)->findOneByUsername('Lpu8er');
-        //$u = $this->getDoctrine()->getRepository(\App\Entity\User::class)->findOneByUsername('Mopitio');
-        //$u = $this->getDoctrine()->getRepository(\App\Entity\User::class)->findOneByUsername('KillerMapper');
-        $u = $this->getDoctrine()->getRepository(\App\Entity\User::class)->findOneByUsername('Yann291');
+        $u = $this->getUser();
         $code = $this->groom->prepareLinkCode($u);
         
         $ups = [];
