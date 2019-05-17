@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Security\UserProvider;
 use App\Service\DiscordGroom;
 use Symfony\Component\Routing\Annotation\Route;
 
