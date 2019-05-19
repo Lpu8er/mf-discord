@@ -10,10 +10,10 @@ use App\Service\Discord;
  */
 class DiscordHelloCommand extends DiscordCommand {
     public function help(Discord $discordService) {
-        $discordService->talk('`'.$discordService->getPrefix().'hello` just say hello', $this->data['channel_id']);
+        $discordService->talk('`'.$discordService->getPrefix().'hello` '.$discordService->t('just say hello'), $this->data['channel_id']);
     }
     
     public function execute(Discord $discordService) {
-        $discordService->talk('Hello World', $this->data['channel_id']);
+        $discordService->talk($discordService->t('Hello World'), $this->data['channel_id']);
     }
 }

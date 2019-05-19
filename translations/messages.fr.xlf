@@ -3,20 +3,20 @@
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
             <trans-unit id="cmd_unimplemented_error">
-                <source>Unimplemented command `%s`</source>
-                <target>Commande non-implémentée `%s`</target>
+                <source>Unimplemented command `%cmd%`</source>
+                <target>Commande non-implémentée `%cmd%`</target>
             </trans-unit>
             <trans-unit id="cmd_unrecognized_error">
-                <source>Unrecognized command `%s`</source>
-                <target>Commande non-reconnue `%s`</target>
+                <source>Unrecognized command `%cmd%`</source>
+                <target>Commande non-reconnue `%cmd%`</target>
             </trans-unit>
             <trans-unit id="unknown_error">
                 <source>An error occured, please retry later</source>
                 <target>Une erreur est survenue. Merci de réessayer ultérieurement.</target>
             </trans-unit>
             <trans-unit id="invalid_code_error">
-                <source>Invalid code (error type %s )</source>
-                <target>Code invalide (erreur %s )</target>
+                <source>Invalid code (error type %err%)</source>
+                <target>Code invalide (erreur %err%)</target>
             </trans-unit>
             <trans-unit id="cmd_hello_help">
                 <source>just say hello</source>
@@ -27,24 +27,24 @@
                 <target>Bonsoir</target>
             </trans-unit>
             <trans-unit id="cmd_help_help">
-                <source>give some help about `%s` command</source>
-                <target>affiche une aide à propos de la commande `%s`</target>
+                <source>give some help about `%cmd%` command</source>
+                <target>affiche une aide à propos de la commande `%cmd%`</target>
             </trans-unit>
             <trans-unit id="cmd_help_exec">
-                <source>Available commands : %s (use `%s` to have more information about a command)</source>
-                <target>Commandes disponibles : %s (utilisez `%s` pour avoir plus d'informations à propos d'une commande)</target>
+                <source>Available commands : %list% (use `%cmd%` to have more information about a command)</source>
+                <target>Commandes disponibles : %list% (utilisez `%cmd%` pour avoir plus d'informations à propos d'une commande)</target>
             </trans-unit>
             <trans-unit id="cmd_kill_exec">
                 <source>Received disconnection order...</source>
                 <target>Réception demande d'arrêt...</target>
             </trans-unit>
             <trans-unit id="cmd_link_help_first">
-                <source>`%s` link your discord account with your Minefield account.</source>
-                <target>`%s` lie votre compte Discord à votre compte Minefield</target>
+                <source>`%cmd%` link your discord account with your Minefield account.</source>
+                <target>`%cmd%` lie votre compte Discord à votre compte Minefield</target>
             </trans-unit>
             <trans-unit id="cmd_link_help_sec">
-                <source>Please note that you have to go on the website to generate the `%s` to enter there.</source>
-                <target>Veuillez notez que vous devez aller sur le site web pour générer le `%s` à saisir.</target></trans-unit>
+                <source>Please note that you have to go on the website to generate the `%code%` to enter there.</source>
+                <target>Veuillez notez que vous devez aller sur le site web pour générer le `%code%` à saisir.</target></trans-unit>
             <trans-unit id="cmd_link_only_dm">
                 <source>This command works only when sent by a DM to the bot.</source>
                 <target>Cette commande ne fonctionne qu'envoyée en privé au bot.</target>

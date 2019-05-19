@@ -8,7 +8,7 @@ namespace App\Utils\DiscordCommand;
  */
 class DiscordHelpCommand extends DiscordCommand {
     public function help(\App\Service\Discord $discordService) {
-        $discordService->talk('`'.$discordService->getPrefix().'help <cmd>` give some help about `<cmd>` command', $this->data['channel_id']);
+        $discordService->talk('`'.$discordService->getPrefix().'help <cmd>` '.$discordService->t('give some help about `%cmd%` command', ['%cmd%' => '<cmd>']), $this->data['channel_id']);
     }
     
     protected function loadHelp($cmd, \App\Service\Discord $discordService) {
@@ -16,7 +16,7 @@ class DiscordHelpCommand extends DiscordCommand {
         if(!empty($o)) {
             $o->help($discordService);
         } else {
-            $discordService->talk('Unimplemented command `'.$cmd.'`');
+            $discordService->talk($discordService->t('Unimplemented command `%cmd%`', ['%cmd%' => $cmd,]));
         }
     }
     
@@ -29,17 +29,17 @@ class DiscordHelpCommand extends DiscordCommand {
                     $this->loadHelp($sub, $discordService);
                 } catch (Exception $ex) {
                     var_dump($ex->getMessage());
-                    $discordService->talk('An error occured, please retry later', $this->data['channel_id']);
+                    $discordService->talk($discordService->t('An error occured, please retry later'), $this->data['channel_id']);
                 }
             } else {
-                $discordService->talk('Unrecognized command `'.$sub.'`');
+                $discordService->talk($discordService->t('Unrecognized command `%cmd%`', ['%cmd%' => $sub,]));
             }
         } else {
             $msg = [];
             foreach($discordService->getAllowedCommands() as $c) {
                 $msg[] = '**'.$c.'**';
             }
-            $discordService->talk('Available commands : '.implode(', ', $msg).' (use `'.$discordService->getPrefix().'help <cmd>` to have more information about a command)', $this->data['channel_id']);
+            $discordService->talk($discordService->t('Available commands : %list% (use `%cmd%` to have more information about a command)', ['%list%' => implode(', ', $msg), '%cmd%' => $discordService->getPrefix().'help <cmd>',]), $this->data['channel_id']);
         }
     }
 }

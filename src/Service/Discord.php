@@ -495,14 +495,14 @@ class Discord {
                     $o->execute($this);
                     $this->disableDelay();
                 } else {
-                    $this->talk($this->translator->trans('Unimplemented command `%s`', ['%s' => $cmd,]), $pureData['channel_id']);
+                    $this->talk($this->t('Unimplemented command `%cmd%`', ['%cmd%' => $cmd,]), $pureData['channel_id']);
                 }
             } catch (Exception $ex) {
                 $this->logger->critical($ex->getMessage());
-                $this->talk($this->translator->trans('An error occured, please retry later'), $pureData['channel_id']);
+                $this->talk($this->t('An error occured, please retry later'), $pureData['channel_id']);
             }
         } else {
-            $this->talk($this->translator->trans('Unrecognized command `%s`', ['%s' => $cmd,]), $pureData['channel_id']);
+            $this->talk($this->t('Unrecognized command `%cmd%`', ['%cmd%' => $cmd,]), $pureData['channel_id']);
         }
     }
     
@@ -737,5 +737,15 @@ class Discord {
      */
     public function getEntityManager() {
         return $this->em;
+    }
+    
+    /**
+     * Shortcut for translations
+     * @param string $str
+     * @param array $params
+     * @return string
+     */
+    public function t(string $str, array $params = []): string {
+        return $this->translator->trans($str, $params);
     }
 }
