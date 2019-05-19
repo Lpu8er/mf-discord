@@ -125,7 +125,7 @@ class User implements UserInterface
         return $this->discordLinkCode;
     }
 
-    public function setDiscordLinkCode(string $discordLinkCode): self
+    public function setDiscordLinkCode(?string $discordLinkCode): self
     {
         $this->discordLinkCode = $discordLinkCode;
 
