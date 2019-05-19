@@ -34,7 +34,7 @@ class DiscordLinkCommand extends DiscordCommand {
                     $msg[] = 'Therefore, we nuked that code from orbit. Please visit the website again in order to get a new code.';
                 }
             }
-            $discordService->talk($msg, $this->data['channel_id']);
+            $discordService->talk(implode(PHP_EOL, $msg), $this->data['channel_id']);
         } elseif (!empty($currentDiscordUser)) {
             if (1 <= count($this->args)) {
                 $sub = preg_replace('`[^a-zA-Z0-9]`', '', array_shift($this->args));
