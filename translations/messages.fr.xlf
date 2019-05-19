@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="cmd_unimplemented_error">
+                <source>Unimplemented command `%cmd%`</source>
+                <target>Commande non-implémentée `%cmd%`</target>
+            </trans-unit>
+            <trans-unit id="cmd_unrecognized_error">
+                <source>Unrecognized command `%cmd%`</source>
+                <target>Commande non-reconnue `%cmd%`</target>
+            </trans-unit>
+            <trans-unit id="unknown_error">
+                <source>An error occured, please retry later</source>
+                <target>Une erreur est survenue. Merci de réessayer ultérieurement.</target>
+            </trans-unit>
+            <trans-unit id="invalid_code_error">
+                <source>Invalid code (error type %err%)</source>
+                <target>Code invalide (erreur %err%)</target>
+            </trans-unit>
+            <trans-unit id="cmd_hello_help">
+                <source>just say hello</source>
+                <target>dit simplement bonsoir</target>
+            </trans-unit>
+            <trans-unit id="cmd_hello_exec">
+                <source>Hello World</source>
+                <target>Bonsoir</target>
+            </trans-unit>
+            <trans-unit id="cmd_help_help">
+                <source>give some help about `%cmd%` command</source>
+                <target>affiche une aide à propos de la commande `%cmd%`</target>
+            </trans-unit>
+            <trans-unit id="cmd_help_exec">
+                <source>Available commands : %list% (use `%cmd%` to have more information about a command)</source>
+                <target>Commandes disponibles : %list% (utilisez `%cmd%` pour avoir plus d'informations à propos d'une commande)</target>
+            </trans-unit>
+            <trans-unit id="cmd_kill_exec">
+                <source>Received disconnection order...</source>
+                <target>Réception demande d'arrêt...</target>
+            </trans-unit>
+            <trans-unit id="cmd_link_help_first">
+                <source>`%cmd%` link your discord account with your Minefield account.</source>
+                <target>`%cmd%` lie votre compte Discord à votre compte Minefield</target>
+            </trans-unit>
+            <trans-unit id="cmd_link_help_sec">
+                <source>Please note that you have to go on the website to generate the `%code%` to enter there.</source>
+                <target>Veuillez notez que vous devez aller sur le site web pour générer le `%code%` à saisir.</target></trans-unit>
+            <trans-unit id="cmd_link_only_dm">
+                <source>This command works only when sent by a DM to the bot.</source>
+                <target>Cette commande ne fonctionne qu'envoyée en privé au bot.</target>
+            </trans-unit>
+            <trans-unit id="link_code_nuked">
+                <source>Therefore, we nuked that code from orbit. Please visit the website again in order to get a new code.</source>
+                <target>Du coup, nous avons annihilé (carrément) le code depuis la basse orbite. Merci de visiter à nouveau le site web pour obtenir un nouveau code.</target>
+            </trans-unit>
+            <trans-unit id="link_progress">
+                <source>User found ! Linking...</source>
+                <target>Utilisateur trouvé ! Liaison...</target>
+            </trans-unit>
+            <trans-unit id="link_done">
+                <source>Linked and setup complete !</source>
+                <target>Liaison et configuration effectuées !</target>
+            </trans-unit>
+            <trans-unit id="cmd_me_help">
+                <source>display some information about your account, if linked (works only in DM)</source>
+                <target>affiche certaines informations à propos de votre compte, s'il est lié (fonctionne uniquement en message privé)</target>
+            </trans-unit>
+            <!-- <trans-unit id="">
+                <source></source>
+                <target></target>
+            </trans-unit> -->
+        </body>
+    </file>
+</xliff>

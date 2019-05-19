@@ -10,7 +10,7 @@ use App\Service\Discord;
  */
 class DiscordMeCommand extends DiscordCommand {
     public function help(Discord $discordService) {
-        $discordService->talk('`'.$discordService->getPrefix().'me` display some information about your account, if linked (works only in DM)', $this->data['channel_id']);
+        $discordService->talk('`'.$discordService->getPrefix().'me` '.$discordService->t('display some information about your account, if linked (works only in DM)'), $this->data['channel_id']);
     }
     
     public function execute(Discord $discordService) {
