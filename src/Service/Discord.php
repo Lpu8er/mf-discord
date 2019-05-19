@@ -1,7 +1,6 @@
 <?php
 namespace App\Service;
 
-use App\Entity\User as DiscordUser;
 use App\Entity\MessageQueue;
 use App\Utils\DiscordCommand as DiscordCommands;
 use App\Utils\REST;
@@ -15,7 +14,7 @@ use Ratchet\RFC6455\Messaging\MessageInterface;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 use React\Socket\Connector as ReactConnector;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Discord BOT service
@@ -166,6 +165,12 @@ class Discord {
     
     /**
      *
+     * @var TranslatorInterface 
+     */
+    protected $translator = null;
+    
+    /**
+     *
      * @var DateTime
      */
     protected $startDate = null;
@@ -200,8 +205,10 @@ class Discord {
      * @param string $token
      * @param string $scope
      */
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, $uri, $token, $scope, $guildId, $channel, $prefix, $allowedCommands, $aliases) {
+    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, TranslatorInterface $translator, $uri, $token, $scope, $guildId, $channel, $prefix, $allowedCommands, $aliases) {
         $this->em = $em;
+        $this->logger = $logger;
+        $this->translator = $translator;
         $this->uri = $uri;
         $this->token = $token;
         $this->scope = $scope;
@@ -210,7 +217,6 @@ class Discord {
         $this->prefix = $prefix;
         $this->allowedCommands = $allowedCommands;
         $this->aliases = $aliases;
-        $this->logger = $logger;
         $this->startDate = new DateTime;
     }
     
@@ -489,14 +495,14 @@ class Discord {
                     $o->execute($this);
                     $this->disableDelay();
                 } else {
-                    $this->talk('Unimplemented command `'.$cmd.'`', $pureData['channel_id']);
+                    $this->talk($this->translator->trans('Unimplemented command `%s`', ['%s' => $cmd,]), $pureData['channel_id']);
                 }
             } catch (Exception $ex) {
                 $this->logger->critical($ex->getMessage());
-                $this->talk('An error occured, please retry later', $pureData['channel_id']);
+                $this->talk($this->translator->trans('An error occured, please retry later'), $pureData['channel_id']);
             }
         } else {
-            $this->talk('Unrecognized command `'.$cmd.'`', $pureData['channel_id']);
+            $this->talk($this->translator->trans('Unrecognized command `%s`', ['%s' => $cmd,]), $pureData['channel_id']);
         }
     }
     
