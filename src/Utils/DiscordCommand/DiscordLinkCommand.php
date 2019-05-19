@@ -30,11 +30,11 @@ class DiscordLinkCommand extends DiscordCommand {
             if (1 <= count($this->args)) {
                 $sub = preg_replace('`[^a-zA-Z0-9]`', '', array_shift($this->args));
                 if (70 < strlen($sub) && 90 > strlen($sub)) {
-                    $this->nukeCode($sub);
+                    $this->nukeCode($discordService, $sub);
                     $msg[] = 'Therefore, we nuked that code from orbit. Please visit the website again in order to get a new code.';
                 }
             }
-            $discordService->talk($msg, $this->data['channel_id']); // @TODO : nuke that code from orbit
+            $discordService->talk($msg, $this->data['channel_id']);
         } elseif (!empty($currentDiscordUser)) {
             if (1 <= count($this->args)) {
                 $sub = preg_replace('`[^a-zA-Z0-9]`', '', array_shift($this->args));
