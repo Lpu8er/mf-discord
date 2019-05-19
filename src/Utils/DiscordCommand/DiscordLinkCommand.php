@@ -16,9 +16,9 @@ class DiscordLinkCommand extends DiscordCommand {
 
     public function help(Discord $discordService) {
         $msg = [
-            '`' . $discordService->getPrefix() . 'link <code>` link your discord account with your Minefield account.',
-            'Please note that you have to go on the website to generate the `<code>` to enter there.',
-            'This command works only when sent by a DM to the bot.'
+            $discordService->t('`%cmd%` link your discord account with your Minefield account.', ['%cmd%' => $discordService->getPrefix() . 'link <code>',]),
+            $discordService->t('Please note that you have to go on the website to generate the `%cmd%` to enter there.', ['%cmd%' => '<code>',]),
+            $discordService->t('This command works only when sent by a DM to the bot.'),
         ];
         $discordService->talk(implode(PHP_EOL, $msg), $this->data['channel_id']);
     }
@@ -26,12 +26,14 @@ class DiscordLinkCommand extends DiscordCommand {
     public function execute(Discord $discordService) {
         $currentDiscordUser = $this->getCurrentDiscordUser();
         if (!empty($this->data['guild_id'])) { // not DM
-            $msg = ['This command works only when sent by a DM to the bot.'];
+            $msg = [
+                $discordService->t('This command works only when sent by a DM to the bot.'),
+            ];
             if (1 <= count($this->args)) {
                 $sub = preg_replace('`[^a-zA-Z0-9]`', '', array_shift($this->args));
                 if (70 < strlen($sub) && 90 > strlen($sub)) {
                     $this->nukeCode($discordService, $sub);
-                    $msg[] = 'Therefore, we nuked that code from orbit. Please visit the website again in order to get a new code.';
+                    $msg[] = $discordService->t('Therefore, we nuked that code from orbit. Please visit the website again in order to get a new code.');
                 }
             }
             $discordService->talk(implode(PHP_EOL, $msg), $this->data['channel_id']);
@@ -55,20 +57,20 @@ class DiscordLinkCommand extends DiscordCommand {
                             $u->setDiscordUser($currentDiscordUser['username'] . '#' . $currentDiscordUser['discriminator']);
                             $discordService->getEntityManager()->persist($u);
                             $discordService->getEntityManager()->flush();
-                            $discordService->talk('User found ! Linking...');
+                            $discordService->talk($discordService->t('User found ! Linking...'));
                             // setup roles and stuff
                             $this->setupUser($discordService, $currentDiscordUser, $u);
-                            $discordService->talk('Linked and setup complete !');
+                            $discordService->talk($discordService->t('Linked and setup complete !'));
                             $discordService->flush($this->data['channel_id']);
                         } else {
-                            $discordService->talk('Invalid code (error type 403)', $this->data['channel_id']);
+                            $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '403',]), $this->data['channel_id']);
                         }
                     } else { // not found, wtf. @TODO add a queue for that
                         $discordService->consoleLog('Invalid code given for discord user #' . $this->data['author']['id']);
-                        $discordService->talk('Invalid code (error type 402)', $this->data['channel_id']);
+                        $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '402',]), $this->data['channel_id']);
                     }
                 } else { // invalid code
-                    $discordService->talk('Invalid code (error type 401)', $this->data['channel_id']);
+                    $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '401',]), $this->data['channel_id']);
                 }
             } else {
                 $this->help($discordService);
