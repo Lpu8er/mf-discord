@@ -17,7 +17,7 @@ class DiscordLinkCommand extends DiscordCommand {
     public function help(Discord $discordService) {
         $msg = [
             $discordService->t('`%cmd%` link your discord account with your Minefield account.', ['%cmd%' => $discordService->getPrefix() . 'link <code>',]),
-            $discordService->t('Please note that you have to go on the website to generate the `%cmd%` to enter there.', ['%cmd%' => '<code>',]),
+            $discordService->t('Please note that you have to go on the website to generate the `%code%` to enter there.', ['%code%' => '<code>',]),
             $discordService->t('This command works only when sent by a DM to the bot.'),
         ];
         $discordService->talk(implode(PHP_EOL, $msg), $this->data['channel_id']);
