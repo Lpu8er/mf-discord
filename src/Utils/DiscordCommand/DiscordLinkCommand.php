@@ -44,7 +44,7 @@ class DiscordLinkCommand extends DiscordCommand {
                     $u = null;
                     $userRepo = $discordService->getEntityManager()->getRepository(User::class);
                     try {
-                        $u = $userRepo->findOneByDiscordLinkCode($sub);
+                        $u = $userRepo->findOneBy(['discordLinkCode' => $sub,]);
                     } catch (Exception $e) {
                         $u = null; // reset
                     }
