@@ -25,7 +25,8 @@ class DiscordMeCommand extends DiscordCommand {
                 $msg[] = $discordService->t('Not linked (yet ?)');
             } else {
                 $msg[] = $discordService->t('Linked to %usr%', ['%usr%' => $mu->getUsername(),]);
-                $msg[] = 'PA : '.$mu->getMoney();
+                $msg[] = $discordService->t('PA').' : '.$mu->getMoney();
+                $msg[] = $discordService->t('Cubo credit').' : '.$mu->getCredit();
                 $msg[] = $discordService->t('Income/outcome tracking').' : https://www.minefield.fr/money.php';
             }
             $discordService->talk(implode(PHP_EOL, $msg), $this->data['channel_id']);
