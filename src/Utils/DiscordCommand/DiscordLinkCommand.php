@@ -44,9 +44,10 @@ class DiscordLinkCommand extends DiscordCommand {
                     $u = null;
                     $userRepo = $discordService->getEntityManager()->getRepository(User::class);
                     try {
-                        $u = $userRepo->findOneBy(['discord_link_code' => $sub,]);
+                        $u = $userRepo->findOneBy(['discordLinkCode' => $sub,]);
                     } catch (Exception $e) {
-                        $discordService->consoleLog('EXCEPTION '.$e->getMessage());
+                        $discordService->getLogger()->critical($e->getMessage());
+                        $discordService->getLogger()->critical($e->getTraceAsString());
                         $u = null; // reset
                     }
                     if (!empty($u)) { // found it, link it, embrace it
@@ -122,6 +123,8 @@ class DiscordLinkCommand extends DiscordCommand {
             try {
                 $perm = $discordService->getEntityManager()->getRepository(Userperm::class)->findOneBy(['permission' => 'trader', 'type' => 'misc', 'user' => $user->getId(),]);
             } catch (Exception $e) {
+                $discordService->getLogger()->critical($e->getMessage());
+                $discordService->getLogger()->critical($e->getTraceAsString());
                 $perm = null;
             }
             if (!empty($perm)) { // yup.
@@ -148,6 +151,9 @@ class DiscordLinkCommand extends DiscordCommand {
                 $em->persist($u);
                 $em->flush();
             }
-        } catch (Exception $e) { } // ignore
+        } catch (Exception $e) {
+            $discordService->getLogger()->critical($e->getMessage());
+            $discordService->getLogger()->critical($e->getTraceAsString());
+        }
     }
 }
