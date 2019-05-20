@@ -50,7 +50,7 @@ class DiscordLinkCommand extends DiscordCommand {
                     }
                     if (!empty($u)) { // found it, link it, embrace it
                         if(empty($u->getDiscordId())
-                                || ($this->data['author']['id'] == $u->getDiscordId())) {
+                                || ($currentDiscordUser['id'] == $u->getDiscordId())) {
                             $discordService->startTyping($this->data['channel_id']);
                             $discordService->enableDelay();
                             $u->setDiscordId($currentDiscordUser['id']);
@@ -63,6 +63,7 @@ class DiscordLinkCommand extends DiscordCommand {
                             $discordService->talk($discordService->t('Linked and setup complete !'));
                             $discordService->flush($this->data['channel_id']);
                         } else {
+                            $discordService->consoleLog('Invalid user discord user #'.$currentDiscordUser['id'].' tried to enter code for discord user #'.$u->getDiscordId());
                             $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '403',]), $this->data['channel_id']);
                         }
                     } else { // not found, wtf. @TODO add a queue for that
