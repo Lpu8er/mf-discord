@@ -44,7 +44,7 @@ class DiscordLinkCommand extends DiscordCommand {
                     $u = null;
                     $userRepo = $discordService->getEntityManager()->getRepository(User::class);
                     try {
-                        $u = $userRepo->findOneBy(['discordLinkCode' => $sub,]);
+                        $u = $userRepo->findOneBy(['discord_link_code' => $sub,]);
                     } catch (Exception $e) {
                         $u = null; // reset
                     }
@@ -67,7 +67,7 @@ class DiscordLinkCommand extends DiscordCommand {
                             $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '403',]), $this->data['channel_id']);
                         }
                     } else { // not found, wtf. @TODO add a queue for that
-                        $discordService->consoleLog('Invalid code "'.$sub.'" given for discord user #' . $this->data['author']['id']);
+                        $discordService->consoleLog('Invalid code given for discord user #' . $this->data['author']['id']);
                         $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '402',]), $this->data['channel_id']);
                     }
                 } else { // invalid code
@@ -141,7 +141,7 @@ class DiscordLinkCommand extends DiscordCommand {
         $em = $discordService->getEntityManager();
         $userRepo = $em->getRepository(User::class);
         try {
-            $u = $userRepo->findOneBy(['discordLinkCode' => $code,]);
+            $u = $userRepo->findOneBy(['discord_link_code' => $code,]);
             if(!empty($u)) {
                 $u->setDiscordLinkCode(null);
                 $em->persist($u);
