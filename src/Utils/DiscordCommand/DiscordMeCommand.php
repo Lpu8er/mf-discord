@@ -16,15 +16,17 @@ class DiscordMeCommand extends DiscordCommand {
     public function execute(Discord $discordService) {
         $du = $this->getCurrentDiscordUser();
         if(!empty($this->data['guild_id'])) { // not DM
-            $discordService->talk('This command works only when sent by a DM to the bot.', $this->data['channel_id']);
+            $discordService->talk($discordService->t('This command works only when sent by a DM to the bot.'), $this->data['channel_id']);
         } elseif(!empty($du)) {
             $mu = $this->checkAuthLink($discordService);
             $msg = [];
-            $msg[] = 'Discord user : `'.$du['username'].'#'.$du['discriminator'].'`';
+            $msg[] = $discordService->t('Discord user').' : `'.$du['username'].'#'.$du['discriminator'].'`';
             if(empty($mu)) {
-                $msg[] = 'Not linked (yet ?)';
+                $msg[] = $discordService->t('Not linked (yet ?)');
             } else {
-                $msg[] = 'Linked to '.$mu->getUsername();
+                $msg[] = $discordService->t('Linked to %usr%', ['%usr%' => $mu->getUsername(),]);
+                $msg[] = 'PA : '.$mu->getMoney();
+                $msg[] = $discordService->t('Income/outcome tracking').' : https://www.minefield.fr/money.php';
             }
             $discordService->talk(implode(PHP_EOL, $msg), $this->data['channel_id']);
         }

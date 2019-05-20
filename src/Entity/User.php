@@ -53,6 +53,11 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=200, nullable=true)
      */
     private $discordId = null;
+    
+    /**
+     * @ORM\Column(type="double")
+     */
+    private $money = 0.;
 
     public function getId(): ?int
     {
@@ -164,6 +169,18 @@ class User implements UserInterface
     public function setGroup(int $group): self
     {
         $this->group = $group;
+
+        return $this;
+    }
+
+    public function getMoney()
+    {
+        return $this->money;
+    }
+
+    public function setMoney($money): self
+    {
+        $this->money = $money;
 
         return $this;
     }

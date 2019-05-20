@@ -65,6 +65,22 @@
                 <source>display some information about your account, if linked (works only in DM)</source>
                 <target>affiche certaines informations à propos de votre compte, s'il est lié (fonctionne uniquement en message privé)</target>
             </trans-unit>
+            <trans-unit id="cmd_me_exec_discorduser">
+                <source>Discord user</source>
+                <target>Utilisateur Discord</target>
+            </trans-unit>
+            <trans-unit id="cmd_me_exec_notlinked">
+                <source>Not linked (yet ?)</source>
+                <target>Pas (encore ?) lié</target>
+            </trans-unit>
+            <trans-unit id="cmd_me_exec_linkedto">
+                <source>Linked to %usr%</source>
+                <target>Lié à %usr%</target>
+            </trans-unit>
+            <trans-unit id="cmd_me_exec_moneytrack">
+                <source>Income/outcome tracking</source>
+                <target>Accès à votre suivi commerçant</target>
+            </trans-unit>
             <!-- <trans-unit id="">
                 <source></source>
                 <target></target>
