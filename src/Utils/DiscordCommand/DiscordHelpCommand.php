@@ -28,7 +28,7 @@ class DiscordHelpCommand extends DiscordCommand {
                 try {
                     $this->loadHelp($sub, $discordService);
                 } catch (Exception $ex) {
-                    var_dump($ex->getMessage());
+                    $discordService->getLogger()->critical($ex->getMessage());
                     $discordService->talk($discordService->t('An error occured, please retry later'), $this->data['channel_id']);
                 }
             } else {

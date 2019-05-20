@@ -499,6 +499,7 @@ class Discord {
                 }
             } catch (Exception $ex) {
                 $this->logger->critical($ex->getMessage());
+                $this->logger->critical($ex->getTraceAsString());
                 $this->talk($this->t('An error occured, please retry later'), $pureData['channel_id']);
             }
         } else {
@@ -737,6 +738,14 @@ class Discord {
      */
     public function getEntityManager() {
         return $this->em;
+    }
+    
+    /**
+     * 
+     * @return LoggerInterface
+     */
+    public function getLogger() {
+        return $this->logger;
     }
     
     /**

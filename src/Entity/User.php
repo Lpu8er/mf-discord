@@ -55,7 +55,7 @@ class User implements UserInterface
     private $discordId = null;
     
     /**
-     * @ORM\Column(type="double")
+     * @ORM\Column(type="float")
      */
     private $money = 0.;
 
