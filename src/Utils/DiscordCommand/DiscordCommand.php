@@ -91,7 +91,7 @@ abstract class DiscordCommand {
         $cu = $this->getCurrentDiscordUser();
         $userRepo = $discordService->getEntityManager()->getRepository(User::class);
         try {
-            $u = $userRepo->findOneBy(['discordId' => $cu['id'],]);
+            $u = $userRepo->findOneByDiscordId($cu['id']);
         } catch(Exception $e) {
             $u = null;
         }
