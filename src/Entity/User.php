@@ -58,6 +58,11 @@ class User implements UserInterface
      * @ORM\Column(type="float")
      */
     private $money = 0.;
+    
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $credit = 0.;
 
     public function getId(): ?int
     {
@@ -180,8 +185,16 @@ class User implements UserInterface
 
     public function setMoney($money): self
     {
-        $this->money = $money;
+        throw new Exception('UNSUPPORTED'); // unsupported
+    }
 
-        return $this;
+    public function getCredit(): ?float
+    {
+        return $this->credit;
+    }
+
+    public function setCredit(float $credit): self
+    {
+        throw new Exception('UNSUPPORTED'); // unsupported
     }
 }
