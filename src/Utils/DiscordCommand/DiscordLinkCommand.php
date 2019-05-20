@@ -46,6 +46,7 @@ class DiscordLinkCommand extends DiscordCommand {
                     try {
                         $u = $userRepo->findOneBy(['discord_link_code' => $sub,]);
                     } catch (Exception $e) {
+                        $discordService->consoleLog('EXCEPTION '.$e->getMessage());
                         $u = null; // reset
                     }
                     if (!empty($u)) { // found it, link it, embrace it

@@ -93,6 +93,7 @@ abstract class DiscordCommand {
         try {
             $u = $userRepo->findOneBy(['discord_id' => $cu['id'],]);
         } catch(Exception $e) {
+            $discordService->consoleLog('EXCEPTION 2 '.$e->getMessage());
             $u = null;
         }
         return $u;
