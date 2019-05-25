@@ -30,7 +30,7 @@ class CheckMessageQueue extends Command {
         $processing = $r->findBy(['status' => MessageQueue::STATUS_PROCESS]);
         $output->writeln('Processing :');
         foreach($processing as $m) {
-            $this->printMessageQueue($output, $msg);
+            $this->printMessageQueue($output, $m);
         }
         $output->writeln('');
         $output->writeln('Queued :');
