@@ -58,14 +58,19 @@ class DiscordLinkCommand extends DiscordCommand {
                                     $discordService->startTyping($this->data['channel_id']);
                                     $discordService->enableDelay();
                                     $u->setDiscordId($currentDiscordUser['id']);
-                                    $u->setDiscordUser($currentDiscordUser['username'] . '#' . $currentDiscordUser['discriminator']);
-                                    $discordService->getEntityManager()->persist($u);
-                                    $discordService->getEntityManager()->flush();
-                                    $discordService->talk($discordService->t('User found ! Linking...'));
-                                    // setup roles and stuff
-                                    $this->setupUser($discordService, $currentDiscordUser, $u);
-                                    $discordService->talk($discordService->t('Linked and setup complete !'));
-                                    $discordService->flush($this->data['channel_id']);
+                                    $u->setDiscordUser(preg_replace('`[^A-A0-9_a-z-]`', '', $currentDiscordUser['username']) . '#' . $currentDiscordUser['discriminator']);
+                                    try {
+                                        $discordService->getEntityManager()->persist($u);
+                                        $discordService->getEntityManager()->flush();
+                                        $discordService->talk($discordService->t('User found ! Linking...'));
+                                        // setup roles and stuff
+                                        $this->setupUser($discordService, $currentDiscordUser, $u);
+                                        $discordService->talk($discordService->t('Linked and setup complete !'));
+                                        $discordService->flush($this->data['channel_id']);
+                                    } catch (Exception $e) {
+                                        $discordService->consoleLog('Fail to save rename of discord user #'.$u->getDiscordId());
+                                        $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '409',]), $this->data['channel_id']);
+                                    }
                                 } else {
                                     $discordService->consoleLog('Invalid user discord user #'.$currentDiscordUser['id'].' tried to enter code for discord user #'.$u->getDiscordId());
                                     $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '403',]), $this->data['channel_id']);
