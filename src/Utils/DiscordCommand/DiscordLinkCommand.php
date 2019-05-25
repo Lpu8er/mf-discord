@@ -41,36 +41,45 @@ class DiscordLinkCommand extends DiscordCommand {
             if (1 <= count($this->args)) {
                 $sub = preg_replace('`[^a-zA-Z0-9]`', '', array_shift($this->args));
                 if (70 < strlen($sub) && 90 > strlen($sub)) {
-                    $u = null;
-                    $userRepo = $discordService->getEntityManager()->getRepository(User::class);
-                    try {
-                        $u = $userRepo->findOneBy(['discordLinkCode' => $sub,]);
-                    } catch (Exception $e) {
-                        $discordService->getLogger()->critical($e->getMessage());
-                        $discordService->getLogger()->critical($e->getTraceAsString());
-                        $u = null; // reset
-                    }
-                    if (!empty($u)) { // found it, link it, embrace it
-                        if(empty($u->getDiscordId())
-                                || ($currentDiscordUser['id'] == $u->getDiscordId())) {
-                            $discordService->startTyping($this->data['channel_id']);
-                            $discordService->enableDelay();
-                            $u->setDiscordId($currentDiscordUser['id']);
-                            $u->setDiscordUser($currentDiscordUser['username'] . '#' . $currentDiscordUser['discriminator']);
-                            $discordService->getEntityManager()->persist($u);
-                            $discordService->getEntityManager()->flush();
-                            $discordService->talk($discordService->t('User found ! Linking...'));
-                            // setup roles and stuff
-                            $this->setupUser($discordService, $currentDiscordUser, $u);
-                            $discordService->talk($discordService->t('Linked and setup complete !'));
-                            $discordService->flush($this->data['channel_id']);
-                        } else {
-                            $discordService->consoleLog('Invalid user discord user #'.$currentDiscordUser['id'].' tried to enter code for discord user #'.$u->getDiscordId());
-                            $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '403',]), $this->data['channel_id']);
+                    if(mb_check_encoding($currentDiscordUser['username'], 'UTF-8')) {
+                        $u = null;
+                        $userRepo = $discordService->getEntityManager()->getRepository(User::class);
+                        try {
+                            $u = $userRepo->findOneBy(['discordLinkCode' => $sub,]);
+                        } catch (Exception $e) {
+                            $discordService->getLogger()->critical($e->getMessage());
+                            $discordService->getLogger()->critical($e->getTraceAsString());
+                            $u = null; // reset
                         }
-                    } else { // not found, wtf. @TODO add a queue for that
-                        $discordService->consoleLog('Invalid code given for discord user #' . $this->data['author']['id']);
-                        $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '402',]), $this->data['channel_id']);
+                        if (!empty($u)) { // found it, link it, embrace it
+                            if(!empty($u->getUsername())) {
+                                if(empty($u->getDiscordId())
+                                        || ($currentDiscordUser['id'] == $u->getDiscordId())) {
+                                    $discordService->startTyping($this->data['channel_id']);
+                                    $discordService->enableDelay();
+                                    $u->setDiscordId($currentDiscordUser['id']);
+                                    $u->setDiscordUser($currentDiscordUser['username'] . '#' . $currentDiscordUser['discriminator']);
+                                    $discordService->getEntityManager()->persist($u);
+                                    $discordService->getEntityManager()->flush();
+                                    $discordService->talk($discordService->t('User found ! Linking...'));
+                                    // setup roles and stuff
+                                    $this->setupUser($discordService, $currentDiscordUser, $u);
+                                    $discordService->talk($discordService->t('Linked and setup complete !'));
+                                    $discordService->flush($this->data['channel_id']);
+                                } else {
+                                    $discordService->consoleLog('Invalid user discord user #'.$currentDiscordUser['id'].' tried to enter code for discord user #'.$u->getDiscordId());
+                                    $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '403',]), $this->data['channel_id']);
+                                }
+                            } else {
+                                $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '407',]), $this->data['channel_id']);
+                            }
+                        } else { // not found, wtf. @TODO add a queue for that
+                            $discordService->consoleLog('Invalid code given for discord user #' . $this->data['author']['id']);
+                            $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '402',]), $this->data['channel_id']);
+                        }
+                    } else {
+                        $discordService->consoleLog('Invalid encoding attack from discord user #' . $this->data['author']['id']);
+                        $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '408',]), $this->data['channel_id']);
                     }
                 } else { // invalid code
                     $discordService->talk($discordService->t('Invalid code (error type %err%)', ['%err%' => '401',]), $this->data['channel_id']);
