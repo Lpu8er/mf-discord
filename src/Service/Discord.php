@@ -50,6 +50,7 @@ class Discord {
     const EVENT_CHANNEL_UPDATE = 'CHANNEL_UPDATE';
     const EVENT_GUILD_EMOJIS_UPDATE = 'GUILD_EMOJIS_UPDATE';
     const EVENT_VOICE_STATE_UPDATE = 'VOICE_STATE_UPDATE';
+    const EVENT_GUILD_MEMBER_UPDATE = 'GUILD_MEMBER_UPDATE';
     
     const INTERVAL_MESSAGEQUEUES = 10;
     
@@ -458,7 +459,8 @@ class Discord {
             static::EVENT_CHANNEL_UPDATE,
             static::EVENT_GUILD_EMOJIS_UPDATE,
             static::EVENT_VOICE_STATE_UPDATE,
-            static::EVENT_CHANNEL_PINS_UPDATE,])) { // ignored events (for now)
+            static::EVENT_CHANNEL_PINS_UPDATE,
+            static::EVENT_GUILD_MEMBER_UPDATE,])) { // ignored events (for now)
             
         } else { // monitored events
             $this->consoleLog('Received event "'.$event.'" (trace below)');
