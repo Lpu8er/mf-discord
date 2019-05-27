@@ -25,7 +25,7 @@ class Discord {
     const OP_MESSAGE = 0;
     const OP_HEARTBEAT = 1;
     const OP_IDENTIFY = 2;
-    const OP_HANDSHAKE = 10;
+    const OP_HELLO = 10;
     const OP_RESUME = 6;
     const OP_RECONNECT = 7;
     const OP_INVALID_SESSION = 9;
@@ -110,6 +110,12 @@ class Discord {
      * @var array 
      */
     protected $rolesCache = [];
+    
+    /**
+     *
+     * @var array
+     */
+    protected $rolesPerms = [];
     
     /**
      *
@@ -204,12 +210,27 @@ class Discord {
     protected $guildId = null;
     
     /**
+     *
+     * @var type 
+     */
+    protected $lockChannel = null;
+    
+    /**
+     *
+     * @var array
+     */
+    protected $autoRoles = [];
+    
+    /**
      * 
      * @param string $uri
      * @param string $token
      * @param string $scope
      */
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, TranslatorInterface $translator, $uri, $token, $scope, $guildId, $channel, $prefix, $allowedCommands, $aliases) {
+    public function __construct(EntityManagerInterface $em,
+            LoggerInterface $logger,
+            TranslatorInterface $translator,
+            $uri, $token, $scope, $guildId, $channel, $prefix, $allowedCommands, $aliases, $lockChannel, $autoRoles) {
         $this->em = $em;
         $this->logger = $logger;
         $this->translator = $translator;
@@ -221,6 +242,8 @@ class Discord {
         $this->prefix = $prefix;
         $this->allowedCommands = $allowedCommands;
         $this->aliases = $aliases;
+        $this->lockChannel = $lockChannel;
+        $this->autoRoles = $autoRoles;
         $this->startDate = new DateTime;
     }
     
@@ -254,6 +277,14 @@ class Discord {
      */
     public function getConnectionDate(): ?DateTime {
         return $this->connectionDate;
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getAutoRoles(): array {
+        return $this->autoRoles;
     }
     
     /**
@@ -397,7 +428,7 @@ class Discord {
             $this->lastSequence = intval($js['s']);
         }
         switch($op) {
-            case static::OP_HANDSHAKE:
+            case static::OP_HELLO:
                 if(!empty($js['d']['heartbeat_interval'])) {
                     $this->hbInterval = max(1, floor(intval($js['d']['heartbeat_interval']) / 1000));
                     // start heartbeating
@@ -439,11 +470,19 @@ class Discord {
         if(static::EVENT_READY === $event) {
             $this->sessionId = $data['session_id']; // we shall keep it in a file or whatever
         } elseif(static::EVENT_GUILD_CREATE === $event) {
-            // TODO stuff on preload to init server caching
+            
+            if(empty($this->channel) && !empty($data['system_channel_id'])) { // use system channel to print base messages if none configured
+                $this->channel = $data['system_channel_id'];
+            }
+            
             foreach($data['roles'] as $role) {
                 $this->rolesCache[$role['id']] = $role['name'];
+                $this->rolesPerms[$role['id']] = $role['permissions'];
             }
+            
             $this->me = $this->me();
+            
+            $this->talk($this->t('Bot loaded and ready'));
         } elseif(static::EVENT_MESSAGE_CREATE === $event) {
             $this->parseMessage($data);
         } elseif(static::EVENT_CHANNEL_CREATE === $event) {
@@ -480,8 +519,8 @@ class Discord {
                 && preg_match('`^'.$this->getEscapedPrefix().'([a-zA-Z0-9]+)(( +)(.+))?$`', $data['content'], $matches)) { // 0 = message
             if(empty($data['guild_id'])) { // private message
                 $this->parseCommand($matches[1], empty($matches[4])? []:explode(' ', $matches[4]), $data, true);
-            } elseif(empty($this->channel)
-                    || ($data['channel_id'] === $this->channel)) { // bot only listen some channels
+            } elseif(empty($this->lockChannel)
+                    || ($data['channel_id'] === $this->lockChannel)) { // bot only listen some channels
                 $this->parseCommand($matches[1], empty($matches[4])? []:explode(' ', $matches[4]), $data, false);
             }
         }

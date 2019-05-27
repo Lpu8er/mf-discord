@@ -82,6 +82,22 @@ abstract class DiscordCommand {
     }
     
     /**
+     * Get current discord roles
+     * @return array|null
+     */
+    final protected function getCurrentUserRoles(Discord $discordService): ?array {
+        $returns = null;
+        $u = $this->getCurrentDiscordUser();
+        if(!empty($u)) {
+            $res = $discordService->getMember($u['id']);
+            if(!empty($res)) {
+                $returns = $res['roles'];
+            }
+        }
+        return $returns;
+    }
+    
+    /**
      * Get currenly linked user to current discord user if any.
      * @param Discord $discordService
      * @return User

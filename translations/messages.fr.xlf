@@ -10,13 +10,17 @@
                 <source>Cubo credit</source>
                 <target>Crédit cubo</target>
             </trans-unit>
+            <trans-unit id="ready">
+                <source>Bot loaded and ready</source>
+                <target>Vous pouvez couper le Walking Chicken, je suis de retour !</target>
+            </trans-unit>
             <trans-unit id="cmd_unimplemented_error">
                 <source>Unimplemented command `%cmd%`</source>
                 <target>Commande non-implémentée `%cmd%`</target>
             </trans-unit>
             <trans-unit id="cmd_unrecognized_error">
                 <source>Unrecognized command `%cmd%`</source>
-                <target>Commande non-reconnue `%cmd%`</target>
+                <target>Commande non-reconnue `%cmd%` *(soon -1 PA)*</target>
             </trans-unit>
             <trans-unit id="unknown_error">
                 <source>An error occured, please retry later</source>

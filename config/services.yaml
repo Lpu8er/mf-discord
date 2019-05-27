@@ -56,6 +56,8 @@ services:
                 - me
             $aliases:
                 hi: hello
+            $lockChannel: '%env(DISCORD_LOCK_CHANNEL)%'
+            $autoRoles: '%env(json:DISCORD_AUTO_ROLES)%'
     
     discordgroom:
         class: App\Service\DiscordGroom
@@ -64,7 +66,7 @@ services:
             $token: '%env(DISCORD_TOKEN)%'
             $scope: '%env(DISCORD_BOT_SCOPE)%'
             $guildId: '%env(DISCORD_GUILD_ID)%'
-            $baseChannel: '%env(DISCORD_BASE_CHANNEL)%'
+            $baseChannel: '%env(DISCORD_BOT_CHANNEL)%'
             $maxAge: 3600
             $linkCodeSalt: '%env(DISCORD_SALT_LINKCODE)%'
     

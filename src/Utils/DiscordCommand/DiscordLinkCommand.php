@@ -105,33 +105,20 @@ class DiscordLinkCommand extends DiscordCommand {
             foreach ($discordMemberData['roles'] as $rid) {
                 $discordService->removeRole($discordUser['id'], $rid);
             }
-
+            
+            $autoRoles = $discordService->getAutoRoles();
+            
             // add the "joueur" role
-            $discordRole = $discordService->getRoleId('joueur');
-            if (!empty($discordRole)) {
-                $discordService->addRole($discordUser['id'], $discordRole);
+            if (!empty($autoRoles['base'])) {
+                $discordService->addRole($discordUser['id'], $autoRoles['base']);
             }
-
+            
             // add "rank" role
-            $rolesCorresp = [
-                1 => 'vagabond',
-                2 => 'paysan',
-                3 => 'citoyen',
-                4 => 'empereur',
-                5 => 'chevalier',
-                6 => 'gouverneur',
-                7 => 'noble',
-                14 => 'villageois',
-            ]; // @TODO cfg maybe ? it's kinda hardcoded.
-            // give appropriate role
             $gid = intval($user->getGroup());
-            if (!empty($gid) && !empty($rolesCorresp[$gid])) {
-                $discordRole = $discordService->getRoleId($rolesCorresp[$gid]);
-                if (!empty($discordRole)) {
-                    $discordService->addRole($discordUser['id'], $discordRole);
-                }
+            if (!empty($gid) && !empty($autoRoles['ranks'][strval($gid)])) {
+                $discordService->addRole($discordUser['id'], $autoRoles['ranks'][strval($gid)]);
             }
-
+            
             // trader ?
             $perm = null;
             try {
@@ -142,9 +129,8 @@ class DiscordLinkCommand extends DiscordCommand {
                 $perm = null;
             }
             if (!empty($perm)) { // yup.
-                $discordRole = $discordService->getRoleId('commercant');
-                if (!empty($discordRole)) {
-                    $discordService->addRole($discordUser['id'], $discordRole);
+                if (!empty($autoRoles['trader'])) {
+                    $discordService->addRole($discordUser['id'], $autoRoles['trader']);
                 }
             }
         }
