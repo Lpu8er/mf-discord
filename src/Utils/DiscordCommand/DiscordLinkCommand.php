@@ -58,7 +58,7 @@ class DiscordLinkCommand extends DiscordCommand {
                                     $discordService->startTyping($this->data['channel_id']);
                                     $discordService->enableDelay();
                                     $u->setDiscordId($currentDiscordUser['id']);
-                                    $u->setDiscordUser(preg_replace('`[^A-A0-9_a-z-]`', '', $currentDiscordUser['username']) . '#' . $currentDiscordUser['discriminator']);
+                                    $u->setDiscordUser(preg_replace('`[^A-Z0-9_a-z-]`', '', $currentDiscordUser['username']) . '#' . $currentDiscordUser['discriminator']);
                                     try {
                                         $discordService->getEntityManager()->persist($u);
                                         $discordService->getEntityManager()->flush();
