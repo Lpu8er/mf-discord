@@ -54,6 +54,7 @@ services:
                 - help
                 - link
                 - me
+                - ff
             $aliases:
                 hi: hello
             $lockChannel: '%env(DISCORD_LOCK_CHANNEL)%'
