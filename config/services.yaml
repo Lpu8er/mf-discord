@@ -55,8 +55,10 @@ services:
                 - link
                 - me
                 - ff
+                - walkingchicken
             $aliases:
                 hi: hello
+                wc: walkingchicken
             $lockChannel: '%env(DISCORD_LOCK_CHANNEL)%'
             $autoRoles: '%env(json:DISCORD_AUTO_ROLES)%'
     
