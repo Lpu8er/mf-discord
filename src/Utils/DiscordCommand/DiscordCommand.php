@@ -82,6 +82,17 @@ abstract class DiscordCommand {
     }
     
     /**
+     * Get current discord nickname, if any (webhooks and bots excluded)
+     * @return string|null
+     */
+    final protected function getCurrentDiscordNick(): ?string {
+        return (!empty($this->data['member'])
+                && !empty($this->data['member']['user'])
+                && !empty($this->data['member']['nick'])
+                && empty($this->data['webhook_id']))? $this->data['member']['nick']:null;
+    }
+    
+    /**
      * Get current discord roles
      * @return array|null
      */

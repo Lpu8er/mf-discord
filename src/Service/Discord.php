@@ -497,8 +497,11 @@ class Discord {
         } elseif(static::EVENT_CHANNEL_CREATE === $event) {
             // discord re-send the channel_create event when the bot is replying, and does not send a different data payload
             // that's prolly a side-effect of their channel/message creation behaviour, so we gonna need to fix it some time later
+        } elseif(static::EVENT_PRESENCE_UPDATE === $event) {
+            // track username change to enforce server-side nickname
+            $o = DiscordCommands\DiscordCommand::load('enforceNickname', [], $data);
+            $o->execute($this);
         } elseif(in_array($event, [
-            static::EVENT_PRESENCE_UPDATE,
             static::EVENT_TYPING_START,
             static::EVENT_MESSAGE_UPDATE,
             static::EVENT_MESSAGE_REACTION_ADD,
