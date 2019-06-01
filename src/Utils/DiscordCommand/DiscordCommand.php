@@ -111,11 +111,12 @@ abstract class DiscordCommand {
     /**
      * Get currenly linked user to current discord user if any.
      * @param Discord $discordService
+     * @param ?string $forcedId
      * @return User
      */
-    final protected function checkAuthLink(Discord $discordService): ?User {
+    final protected function checkAuthLink(Discord $discordService, $forcedId = null): ?User {
         $u = null;
-        $cu = $this->getCurrentDiscordUser();
+        $cu = empty($forcedId)? $this->getCurrentDiscordUser():['id' => $forcedId,];
         $userRepo = $discordService->getEntityManager()->getRepository(User::class);
         try {
             $u = $userRepo->findOneBy(['discordId' => $cu['id'],]);

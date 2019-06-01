@@ -10,11 +10,15 @@ use App\Service\Discord;
  */
 class DiscordEnforceNicknameCommand extends DiscordAdmin {
     public function execute(Discord $discordService) {
-        $du = $this->getCurrentDiscordUser();
+        $du = (!empty($this->data['user'])
+                && !empty($this->data['user']['id'])
+                && empty($this->data['guild_id'])
+                && empty($this->data['user']['bot'])
+                && !empty($this->data['user']['username']))? $this->data['user']:null;
         if(!empty($du)) {
-            $mu = $this->checkAuthLink($discordService);
+            $mu = $this->checkAuthLink($discordService, $this->data['user']['id']);
             if(!empty($mu)) { // identified and linked
-                if($mu->getUsername() != $this->getCurrentDiscordNick()) { // something's odd
+                if($mu->getUsername() != $du['username']) { // something's odd is going on
                     $discordService->renameMember($du['id'], $mu->getUsername());
                 }
             }
