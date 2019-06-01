@@ -93,6 +93,18 @@
                 <source>Income/outcome tracking</source>
                 <target>Accès à votre suivi commerçant</target>
             </trans-unit>
+            <trans-unit id="cmd_ticket_help">
+                <source>display your current ticket status (works only in DM)</source>
+                <target>affiche la progression de votre ticket en cours (fonctionne uniquement par MP au bot)</target>
+            </trans-unit>
+            <trans-unit id="cmd_ticket_exec_none">
+                <source>No open ticket</source>
+                <target>Aucun ticket ouvert ou tous tickets résolus</target>
+            </trans-unit>
+            <trans-unit id="cmd_ticket_exec_found">
+                <source>Open ticket found</source>
+                <target>Ticket ouvert localisé</target>
+            </trans-unit>
             <!-- <trans-unit id="">
                 <source></source>
                 <target></target>

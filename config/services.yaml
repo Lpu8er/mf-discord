@@ -58,6 +58,7 @@ services:
                 - walkingchicken
                 - hi
                 - wc
+                - ticket
             $aliases:
                 hi: hello
                 wc: walkingchicken

@@ -222,6 +222,12 @@ class Discord {
     protected $autoRoles = [];
     
     /**
+     *
+     * @var bool
+     */
+    protected $saidHello = false;
+    
+    /**
      * 
      * @param string $uri
      * @param string $token
@@ -482,7 +488,10 @@ class Discord {
             
             $this->me = $this->me();
             
-            $this->talk($this->t('Bot loaded and ready'));
+            if(!$this->saidHello) {
+                $this->saidHello = true;
+                $this->talk($this->t('Bot loaded and ready'));
+            }
         } elseif(static::EVENT_MESSAGE_CREATE === $event) {
             $this->parseMessage($data);
         } elseif(static::EVENT_CHANNEL_CREATE === $event) {
