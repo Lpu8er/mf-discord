@@ -1,6 +1,8 @@
 <?php
 namespace App\Utils\DiscordCommand;
 
+use App\Service\Discord;
+
 /**
  * Description of DiscordEnforceNicknameCommand
  *
