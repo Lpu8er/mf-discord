@@ -499,7 +499,7 @@ class Discord {
             // that's prolly a side-effect of their channel/message creation behaviour, so we gonna need to fix it some time later
         } elseif(static::EVENT_PRESENCE_UPDATE === $event) {
             // track username change to enforce server-side nickname
-            $o = DiscordCommands\DiscordCommand::load('enforceNickname', [], $data);
+            $o = DiscordCommands\DiscordCommand::load('enforceNickname', [], $data, true);
             $o->execute($this);
         } elseif(in_array($event, [
             static::EVENT_TYPING_START,

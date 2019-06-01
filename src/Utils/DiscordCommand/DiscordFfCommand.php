@@ -10,7 +10,7 @@ use App\Service\Discord;
  */
 class DiscordFfCommand extends DiscordCommand {
     public function help(Discord $discordService) {
-        $discordService->talk('`'.$discordService->getPrefix().'ff`', $this->data['channel_id']);
+        $discordService->talk('`'.$discordService->getPrefix().'ff` freefield event', $this->data['channel_id']);
     }
     
     public function execute(Discord $discordService) {
