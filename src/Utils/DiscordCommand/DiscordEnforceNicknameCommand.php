@@ -15,8 +15,8 @@ class DiscordEnforceNicknameCommand extends DiscordAdmin {
                 && empty($this->data['user']['bot'])
                 && empty($this->data['nick']) // no nick yet
                 && !empty($this->data['user']['username']))? $this->data['user']:null; // username is populated when the user changes it
-        $discordService->consoleLog('PRESENCE_UPDATE = '.var_export($this->data, true));
         if(!empty($du)) {
+            $discordService->consoleLog('PRESENCE_UPDATE = '.var_export($this->data, true));
             $mu = $this->checkAuthLink($discordService, $this->data['user']['id']);
             if(!empty($mu)) { // identified and linked
                 if($mu->getUsername() != $du['username']) { // something's odd is going on
