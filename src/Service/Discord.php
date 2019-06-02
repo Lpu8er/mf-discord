@@ -225,6 +225,12 @@ class Discord {
      *
      * @var bool
      */
+    protected $sayHello = false;
+    
+    /**
+     *
+     * @var bool
+     */
     protected $saidHello = false;
     
     /**
@@ -236,7 +242,7 @@ class Discord {
     public function __construct(EntityManagerInterface $em,
             LoggerInterface $logger,
             TranslatorInterface $translator,
-            $uri, $token, $scope, $guildId, $channel, $prefix, $allowedCommands, $aliases, $lockChannel, $autoRoles) {
+            $uri, $token, $scope, $guildId, $channel, $prefix, $allowedCommands, $aliases, $lockChannel, $autoRoles, $sayHello) {
         $this->em = $em;
         $this->logger = $logger;
         $this->translator = $translator;
@@ -250,6 +256,7 @@ class Discord {
         $this->aliases = $aliases;
         $this->lockChannel = $lockChannel;
         $this->autoRoles = $autoRoles;
+        $this->sayHello = !!$sayHello;
         $this->startDate = new DateTime;
     }
     
@@ -291,6 +298,14 @@ class Discord {
      */
     public function getAutoRoles(): array {
         return $this->autoRoles;
+    }
+    
+    /**
+     * 
+     * @return bool
+     */
+    public function isPolite(): bool {
+        return $this->sayHello;
     }
     
     /**
@@ -488,7 +503,7 @@ class Discord {
             
             $this->me = $this->me();
             
-            if(!$this->saidHello) {
+            if($this->isPolite() && !$this->saidHello) {
                 $this->saidHello = true;
                 $this->talk($this->t('Bot loaded and ready'));
             }

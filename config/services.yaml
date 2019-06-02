@@ -64,6 +64,7 @@ services:
                 wc: walkingchicken
             $lockChannel: '%env(DISCORD_LOCK_CHANNEL)%'
             $autoRoles: '%env(json:DISCORD_AUTO_ROLES)%'
+            $sayHello: '%env(DISCORD_HELLO)%'
     
     discordgroom:
         class: App\Service\DiscordGroom
