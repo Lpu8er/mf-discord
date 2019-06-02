@@ -10,12 +10,12 @@ use App\Service\Discord;
  */
 class DiscordEnforceNicknameCommand extends DiscordAdmin {
     public function execute(Discord $discordService) {
-        $discordService->consoleLog('PRESENCE_UPDATE = '.var_export($this->data, true));
         $du = (!empty($this->data['user'])
                 && !empty($this->data['user']['id'])
                 && empty($this->data['user']['bot'])
-                && empty($this->data['user']['nick']) // no nick yet
+                && empty($this->data['nick']) // no nick yet
                 && !empty($this->data['user']['username']))? $this->data['user']:null; // username is populated when the user changes it
+        $discordService->consoleLog('PRESENCE_UPDATE = '.var_export($this->data, true));
         if(!empty($du)) {
             $mu = $this->checkAuthLink($discordService, $this->data['user']['id']);
             if(!empty($mu)) { // identified and linked
