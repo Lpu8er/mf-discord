@@ -10,6 +10,7 @@ use App\Service\Discord;
  */
 class DiscordEnforceNicknameCommand extends DiscordAdmin {
     public function execute(Discord $discordService) {
+        $discordService->consoleLog('PRESENCE_UPDATE = '.var_export($this->data, true));
         $du = (!empty($this->data['user'])
                 && !empty($this->data['user']['id'])
                 && empty($this->data['guild_id'])
