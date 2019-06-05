@@ -16,7 +16,7 @@ class DiscordHelpCommand extends DiscordCommand {
         if(!empty($o)) {
             $o->help($discordService);
         } else {
-            $discordService->talk($discordService->t('Unimplemented command `%cmd%`', ['%cmd%' => $cmd,]));
+            $discordService->talk($discordService->t('Unimplemented command `%cmd%`', ['%cmd%' => $cmd,]), $this->data['channel_id']);
         }
     }
     
@@ -32,7 +32,7 @@ class DiscordHelpCommand extends DiscordCommand {
                     $discordService->talk($discordService->t('An error occured, please retry later'), $this->data['channel_id']);
                 }
             } else {
-                $discordService->talk($discordService->t('Unrecognized command `%cmd%`', ['%cmd%' => $sub,]));
+                $discordService->talk($discordService->t('Unrecognized command `%cmd%`', ['%cmd%' => $sub,]), $this->data['channel_id']);
             }
         } else {
             $msg = [];

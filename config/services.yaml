@@ -59,9 +59,11 @@ services:
                 - hi
                 - wc
                 - ticket
+                - die
             $aliases:
                 hi: hello
                 wc: walkingchicken
+                d: die
             $lockChannel: '%env(DISCORD_LOCK_CHANNEL)%'
             $autoRoles: '%env(json:DISCORD_AUTO_ROLES)%'
             $sayHello: '%env(DISCORD_HELLO)%'

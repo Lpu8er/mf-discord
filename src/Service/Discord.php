@@ -561,6 +561,7 @@ class Discord {
      * @param bool $private
      */
     protected function parseCommand(string $cmd, array $args, array $pureData, bool $private = false) {
+        var_dump($pureData);
         if($this->isAllowedCommand($cmd)) {
             try {
                 $cmd = $this->getAliasedCommand($cmd);
