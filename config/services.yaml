@@ -60,6 +60,7 @@ services:
                 - wc
                 - ticket
                 - die
+                - d
             $aliases:
                 hi: hello
                 wc: walkingchicken
