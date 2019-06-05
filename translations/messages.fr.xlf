@@ -105,6 +105,18 @@
                 <source>Open ticket found</source>
                 <target>Ticket ouvert localisé</target>
             </trans-unit>
+            <trans-unit id="cmd_die_help">
+                <source>throws a die</source>
+                <target>lance un dé</target>
+            </trans-unit>
+            <trans-unit id="cmd_die_help_one">
+                <source>throws %arg% 6-faces dice</source>
+                <target>lance %arg% dé(s)</target>
+            </trans-unit>
+            <trans-unit id="cmd_die_help_two">
+                <source>throws %arg% %sec%-faces dice</source>
+                <target>lance %arg% dé(s) à %sec% faces</target>
+            </trans-unit>
             <!-- <trans-unit id="">
                 <source></source>
                 <target></target>
