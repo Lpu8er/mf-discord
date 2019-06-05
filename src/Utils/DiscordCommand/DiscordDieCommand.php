@@ -12,8 +12,8 @@ class DiscordDieCommand extends DiscordCommand {
     public function help(Discord $discordService) {
         $msg = [];
         $msg[] = '`'.$discordService->getPrefix().'die` '.$discordService->t('throws a die');
-        $msg[] = '`'.$discordService->getPrefix().'die` <n> '.$discordService->t('throws %arg% 6-faces dice', ['%arg%' => '<n>',]);
-        $msg[] = '`'.$discordService->getPrefix().'die` <n> <h> '.$discordService->t('throws %arg% %sec%-faces dice', ['%arg%' => '<n>', '%sec%' => '<h>',]);
+        $msg[] = '`'.$discordService->getPrefix().'die <n>` '.$discordService->t('throws %arg% 6-faces dice', ['%arg%' => '`<n>`',]);
+        $msg[] = '`'.$discordService->getPrefix().'die <n> <h>` '.$discordService->t('throws %arg% %sec%-faces dice', ['%arg%' => '`<n>`', '%sec%' => '`<h>`',]);
         $discordService->talk(implode(PHP_EOL, $msg), $this->data['channel_id']);
     }
     
