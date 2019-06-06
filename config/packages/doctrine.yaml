@@ -7,26 +7,55 @@ parameters:
 
 doctrine:
     dbal:
-        # configure these for your database server
-        driver: 'pdo_mysql'
-        server_version: '5.7'
-        charset: utf8mb4
-        default_table_options:
-            charset: utf8mb4
-            collate: utf8mb4_unicode_ci
+        default_connection: default
+        connections:
+            default:
+                driver: 'pdo_mysql'
+                server_version: '5.7'
+                charset: utf8mb4
+                default_table_options:
+                    charset: utf8mb4
+                    collate: utf8mb4_unicode_ci
 
-        url: '%env(resolve:DATABASE_URL)%'
-        mapping_types:
-            enum: string
-            bit: integer
+                url: '%env(resolve:DATABASE_URL)%'
+                mapping_types:
+                    enum: string
+                    bit: integer
+            website:
+                driver: 'pdo_mysql'
+                server_version: '5.7'
+                charset: utf8mb4
+                default_table_options:
+                    charset: utf8mb4
+                    collate: utf8mb4_unicode_ci
+                
+                url: '%env(resolve:DATABASE_WEBSITE_URL)%'
+                mapping_types:
+                    enum: string
+                    bit: integer
     orm:
+        default_entity_manager: default
         auto_generate_proxy_classes: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore
-        auto_mapping: true
-        mappings:
-            App:
-                is_bundle: false
-                type: annotation
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-                alias: App
+        entity_managers:
+            default:
+                connection: default
+                naming_strategy: doctrine.orm.naming_strategy.underscore
+                auto_mapping: true
+                mappings:
+                    App:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/src/Entity'
+                        prefix: 'App\Entity'
+                        alias: App
+            website:
+                connection: website
+                naming_strategy: doctrine.orm.naming_strategy.underscore
+                auto_mapping: false
+                mappings:
+                    Website:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/src/Entity/Website'
+                        prefix: 'App\Entity\Website'
+                        alias: Website
