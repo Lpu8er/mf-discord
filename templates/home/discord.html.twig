@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    Code : {{ code }}
+    <pre>
+        {% for c in ups %}
+            {{  c }}
+        {% endfor %}
+    </pre>
+{% endblock %}

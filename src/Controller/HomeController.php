@@ -2,16 +2,47 @@
 
 namespace App\Controller;
 
+use App\Security\UserProvider;
+use App\Service\DiscordGroom;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends BaseController
 {
+    /**
+     *
+     * @var DiscordGroom 
+     */
+    protected $groom;
+    
+    public function __construct(DiscordGroom $groom) {
+        $this->groom = $groom;
+    }
+    
     /**
      * @Route("/", name="home")
      */
     public function index()
     {
         return $this->render('home/index.html.twig', []);
+    }
+    
+    /**
+     * @Route("/discord", name="discord")
+     */
+    public function discord() {
+        $u = $this->getUser();
+        $code = $this->groom->prepareLinkCode($u);
+        
+        $ups = [];
+        for($i = 0; $i<50; $i++) {
+            $ups[] = $this->groom->generatePseudoRandom();
+        }
+        
+        return $this->render('home/discord.html.twig', [
+            'errors' => [],
+            'code' => $code,
+            'ups' => $ups,
+        ]);
     }
     
     /**

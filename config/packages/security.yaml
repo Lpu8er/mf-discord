@@ -5,17 +5,15 @@ security:
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: username
-        # used to reload user from session & other features (e.g. switch_user)
+        in_memory: { memory: ~ }
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            guard:
+                authenticators:
+                    - App\Security\MinefieldAuthenticator
             anonymous: true
 
             # activate different ways to authenticate
