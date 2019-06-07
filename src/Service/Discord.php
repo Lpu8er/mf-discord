@@ -234,6 +234,12 @@ class Discord {
     protected $saidHello = false;
     
     /**
+     *
+     * @var array
+     */
+    protected $emotesCache = null;
+    
+    /**
      * 
      * @param string $uri
      * @param string $token
@@ -499,6 +505,10 @@ class Discord {
             foreach($data['roles'] as $role) {
                 $this->rolesCache[$role['id']] = $role['name'];
                 $this->rolesPerms[$role['id']] = $role['permissions'];
+            }
+            
+            foreach($data['emojis'] as $emoji) {
+                $this->emotesCache[$emoji['name']] = $emoji['id'];
             }
             
             $this->me = $this->me();
@@ -831,5 +841,14 @@ class Discord {
      */
     public function t(string $str, array $params = []): string {
         return $this->translator->trans($str, $params);
+    }
+    
+    /**
+     * "<:NAME:ID>"
+     * @param string $name
+     * @return string
+     */
+    public function emote(string $name): string {
+        return array_key_exists($name, $this->emotesCache)? ('<:'.$name.':'.$this->emotesCache[$name].'>'):(':'.$name.':');
     }
 }
