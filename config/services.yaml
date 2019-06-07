@@ -61,10 +61,19 @@ services:
                 - ticket
                 - die
                 - d
+                - headtail
+                - ht
+                - head
+                - tail
+                - h
+                - t
             $aliases:
                 hi: hello
                 wc: walkingchicken
                 d: die
+                ht: headtail
+                h: head
+                t: tail
             $lockChannel: '%env(DISCORD_LOCK_CHANNEL)%'
             $autoRoles: '%env(json:DISCORD_AUTO_ROLES)%'
             $sayHello: '%env(DISCORD_HELLO)%'

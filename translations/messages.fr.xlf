@@ -14,6 +14,14 @@
                 <source>Bot loaded and ready</source>
                 <target>Vous pouvez couper le Walking Chicken, je suis de retour !</target>
             </trans-unit>
+            <trans-unit id="head">
+                <source>head</source>
+                <target>face</target>
+            </trans-unit>
+            <trans-unit id="tail">
+                <source>tail</source>
+                <target>pile</target>
+            </trans-unit>
             <trans-unit id="cmd_unimplemented_error">
                 <source>Unimplemented command `%cmd%`</source>
                 <target>Commande non-implémentée `%cmd%`</target>
@@ -116,6 +124,26 @@
             <trans-unit id="cmd_die_help_two">
                 <source>throws %arg% %sec%-faces dice</source>
                 <target>lance %arg% dé(s) à %sec% faces</target>
+            </trans-unit>
+            <trans-unit id="cmd_ht_help_one">
+                <source>throws a coin</source>
+                <target>lance une pièce</target>
+            </trans-unit>
+            <trans-unit id="cmd_ht_help_two">
+                <source>throws %arg% coins</source>
+                <target>lance %arg% pièces</target>
+            </trans-unit>
+            <trans-unit id="cmd_ht_help_toss">
+                <source>%h% = head | %t% = tail</source>
+                <target>%t% = pile | %h% = face</target>
+            </trans-unit>
+            <trans-unit id="cmd_head_help">
+                <source>throws a coin, success only on head</source>
+                <target>lance une pièce, réussite uniquement sur face</target>
+            </trans-unit>
+            <trans-unit id="cmd_tail_help">
+                <source>throws a coin, success only on tail</source>
+                <target>lance une pièce, réussite uniquement sur pile</target>
             </trans-unit>
             <!-- <trans-unit id="">
                 <source></source>

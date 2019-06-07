@@ -4,15 +4,16 @@ namespace App\Utils\DiscordCommand;
 use App\Service\Discord;
 
 /**
- * Description of DiscordHtCommand
+ * Description of DiscordHeadtailCommand
  *
  * @author lpu8er
  */
-class DiscordHtCommand extends DiscordCommand {
+class DiscordHeadtailCommand extends DiscordCommand {
     public function help(Discord $discordService) {
         $msg = [];
-        $smg[] = '`'.$discordService->getPrefix().'ht` '.$discordService->t('throws a coin');
-        $smg[] = '`'.$discordService->getPrefix().'ht` <n> '.$discordService->t('throws %arg% coins', ['%arg%' => '<n>',]);
+        $msg[] = '`'.$discordService->getPrefix().'headtail` '.$discordService->t('throws a coin');
+        $msg[] = '`'.$discordService->getPrefix().'headtail` <n> '.$discordService->t('throws %arg% coins', ['%arg%' => '<n>',]);
+        $msg[] = $discordService->t('%h% = head | %t% = tail', ['%h%' => ':pa_head:', '%t%' => ':pa_tail:',]);
         $discordService->talk(implode(PHP_EOL, $msg), $this->data['channel_id']);
     }
     
@@ -25,8 +26,8 @@ class DiscordHtCommand extends DiscordCommand {
         $msg = [];
         for($i = 0; $i < $sub; $i++) {
             $r = !!mt_rand(0, 1);
-            $msg[] = '';
+            $msg[] = ':pa_'.($r? 'head':'tail').':';
         }
-        $discordService->talk($discordService->t('Hello World'), $this->data['channel_id']);
+        $discordService->talk(implode(' ', $msg), $this->data['channel_id']);
     }
 }
