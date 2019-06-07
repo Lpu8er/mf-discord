@@ -13,7 +13,7 @@ class DiscordHeadtailCommand extends DiscordCommand {
         $msg = [];
         $msg[] = '`'.$discordService->getPrefix().'headtail` '.$discordService->t('throws a coin');
         $msg[] = '`'.$discordService->getPrefix().'headtail` <n> '.$discordService->t('throws %arg% coins', ['%arg%' => '<n>',]);
-        $msg[] = $discordService->t('%h% = head | %t% = tail', ['%h%' => ':pa_head:', '%t%' => ':pa_tail:',]);
+        $msg[] = $discordService->t('%h% = head | %t% = tail', ['%h%' => $discordService->emote('pa_head'), '%t%' => $discordService->emote('pa_tail'),]);
         $discordService->talk(implode(PHP_EOL, $msg), $this->data['channel_id']);
     }
     
@@ -26,7 +26,7 @@ class DiscordHeadtailCommand extends DiscordCommand {
         $msg = [];
         for($i = 0; $i < $sub; $i++) {
             $r = !!mt_rand(0, 1);
-            $msg[] = ':pa_'.($r? 'head':'tail').':';
+            $msg[] = $discordService->emote('pa_'.($r? 'head':'tail'));
         }
         $discordService->talk(implode(' ', $msg), $this->data['channel_id']);
     }

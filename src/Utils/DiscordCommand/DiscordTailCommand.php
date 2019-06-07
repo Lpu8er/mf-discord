@@ -18,7 +18,7 @@ class DiscordTailCommand extends DiscordCommand {
     public function execute(Discord $discordService) {
         $msg = [];
         $r = !!mt_rand(0, 1);
-        $msg[] = ':pa_'.($r? 'head':'tail').':';
+        $msg[] = $discordService->emote('pa_'.($r? 'head':'tail'));
         $msg[] = $discordService->t($r? 'head':'tail');
         if(!$r) { $msg[] = ':tada:'; }
         else { $msg[] = ':sob:'; }
