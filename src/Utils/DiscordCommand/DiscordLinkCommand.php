@@ -97,11 +97,15 @@ class DiscordLinkCommand extends DiscordCommand {
 
     protected function setupUser(Discord $discordService, $discordUser, User $user) {
         $discordMemberData = $discordService->getMember($discordUser['id']);
+        $discordService->consoleLog('SETUP USER '.$user->getUsername());
+        $discordService->consoleLog(var_export($discordMemberData, true));
         if (!empty($discordMemberData)) {
+            $discordService->talk($discordService->t('Checking names...'), $this->data['channel_id']);
             // rename member
             $discordService->renameMember($discordUser['id'], $user->getUsername());
 
             // start by clearing all roles
+            $discordService->talk($discordService->t('Clearing roles...'), $this->data['channel_id']);
             foreach ($discordMemberData['roles'] as $rid) {
                 $discordService->removeRole($discordUser['id'], $rid);
             }
@@ -110,12 +114,15 @@ class DiscordLinkCommand extends DiscordCommand {
             
             // add the "joueur" role
             if (!empty($autoRoles['base'])) {
+                $discordService->talk($discordService->t('Adding base role...'), $this->data['channel_id']);
                 $discordService->addRole($discordUser['id'], $autoRoles['base']);
             }
             
             // add "rank" role
             $gid = intval($user->getGroup());
             if (!empty($gid) && !empty($autoRoles['ranks'][strval($gid)])) {
+                $discordService->consoleLog('SETUP USER ROLE('.strval($gid).') TO('.$autoRoles['ranks'][strval($gid)].')');
+                $discordService->talk($discordService->t('Adding role for rank %ranknb% ...', ['%ranknb%' => '#'.strval($user->getGroup()),]), $this->data['channel_id']);
                 $discordService->addRole($discordUser['id'], $autoRoles['ranks'][strval($gid)]);
             }
             
@@ -130,6 +137,7 @@ class DiscordLinkCommand extends DiscordCommand {
             }
             if (!empty($perm)) { // yup.
                 if (!empty($autoRoles['trader'])) {
+                    $discordService->talk($discordService->t('Adding trader role...'), $this->data['channel_id']);
                     $discordService->addRole($discordUser['id'], $autoRoles['trader']);
                 }
             }
