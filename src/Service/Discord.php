@@ -782,9 +782,12 @@ class Discord {
      * @param string $roleId
      */
     public function removeRole($userId, $roleId) {
-        REST::json($this->uri, '/guilds/'.$this->guildId.'/members/'.$userId.'/roles/'.$roleId, REST::METHOD_DELETE, [], [
+        $rr = REST::json($this->uri, '/guilds/'.$this->guildId.'/members/'.$userId.'/roles/'.$roleId, REST::METHOD_DELETE, [], [
             'Authorization' => 'Bot '.$this->token,
         ]);
+        if(!$rr->isValid()) {
+            $this->consoleLog('Failed ro remove role '.$roleId.' from user '.$userId);
+        }
     }
     
     /**
@@ -793,9 +796,12 @@ class Discord {
      * @param string $roleId
      */
     public function addRole($userId, $roleId) {
-        REST::json($this->uri, '/guilds/'.$this->guildId.'/members/'.$userId.'/roles/'.$roleId, REST::METHOD_PUT, [], [
+        $rr = REST::json($this->uri, '/guilds/'.$this->guildId.'/members/'.$userId.'/roles/'.$roleId, REST::METHOD_PUT, [], [
             'Authorization' => 'Bot '.$this->token,
         ]);
+        if(!$rr->isValid()) {
+            $this->consoleLog('Failed to add role '.$roleId.' to user '.$userId);
+        }
     }
     
     /**
@@ -804,11 +810,14 @@ class Discord {
      * @param string $newName
      */
     public function renameMember($userId, $newName) {
-        REST::json($this->uri, '/guilds/'.$this->guildId.'/members/'.$userId, REST::METHOD_PATCH, [
+        $rr = REST::json($this->uri, '/guilds/'.$this->guildId.'/members/'.$userId, REST::METHOD_PATCH, [
             'nick' => $newName,
         ], [
             'Authorization' => 'Bot '.$this->token,
         ]);
+        if(!$rr->isValid()) {
+            $this->consoleLog('Failed to rename member '.$userId.' to name "'.$newName.'"');
+        }
     }
     
     /**
