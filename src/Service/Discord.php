@@ -48,9 +48,11 @@ class Discord {
     const EVENT_GUILD_ROLE_UPDATE = 'GUILD_ROLE_UPDATE';
     const EVENT_CHANNEL_CREATE = 'CHANNEL_CREATE';
     const EVENT_CHANNEL_UPDATE = 'CHANNEL_UPDATE';
+    const EVENT_CHANNEL_DELETE = 'CHANNEL_DELETE';
     const EVENT_GUILD_EMOJIS_UPDATE = 'GUILD_EMOJIS_UPDATE';
     const EVENT_VOICE_STATE_UPDATE = 'VOICE_STATE_UPDATE';
     const EVENT_GUILD_MEMBER_UPDATE = 'GUILD_MEMBER_UPDATE';
+    const EVENT_MESSAGE_REACTION_REMOVE = 'MESSAGE_REACTION_REMOVE';
     
     const INTERVAL_MESSAGEQUEUES = 10;
     
@@ -530,13 +532,17 @@ class Discord {
             static::EVENT_TYPING_START,
             static::EVENT_MESSAGE_UPDATE,
             static::EVENT_MESSAGE_REACTION_ADD,
+            static::EVENT_MESSAGE_REACTION_REMOVE,
+            static::EVENT_MESSAGE_DELETE,
             static::EVENT_PRESENCES_REPLACE,
             static::EVENT_GUILD_ROLE_UPDATE,
             static::EVENT_CHANNEL_UPDATE,
+            static::EVENT_CHANNEL_DELETE,
             static::EVENT_GUILD_EMOJIS_UPDATE,
             static::EVENT_VOICE_STATE_UPDATE,
             static::EVENT_CHANNEL_PINS_UPDATE,
-            static::EVENT_GUILD_MEMBER_UPDATE,])) { // ignored events (for now)
+            static::EVENT_GUILD_MEMBER_UPDATE,
+            ])) { // ignored events (for now)
             
         } else { // monitored events
             $this->consoleLog('Received event "'.$event.'" (trace below)');
