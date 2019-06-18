@@ -145,6 +145,26 @@
                 <source>throws a coin, success only on tail</source>
                 <target>lance une pièce, réussite uniquement sur pile</target>
             </trans-unit>
+            <trans-unit id="cmd_link_exec_names">
+                <source>Checking names...</source>
+                <target>Vérification de noms...</target>
+            </trans-unit>
+            <trans-unit id="cmd_link_exec_clears">
+                <source>Clearing roles...</source>
+                <target>Nettoyage des rôles...</target>
+            </trans-unit>
+            <trans-unit id="cmd_link_exec_addbase">
+                <source>Adding base role...</source>
+                <target>Ajout du rôle de base...</target>
+            </trans-unit>
+            <trans-unit id="cmd_link_exec_addspec">
+                <source>Adding role for rank %ranknb% ...</source>
+                <target>Ajout du rôle spécifique %ranknb% ...</target>
+            </trans-unit>
+            <trans-unit id="cmd_link_exec_addtrader">
+                <source>Adding trader role...</source>
+                <target>Ajout du rôle commerce</target>
+            </trans-unit>
             <!-- <trans-unit id="">
                 <source></source>
                 <target></target>
