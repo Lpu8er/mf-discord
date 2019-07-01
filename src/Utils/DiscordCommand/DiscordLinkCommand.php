@@ -126,6 +126,14 @@ class DiscordLinkCommand extends DiscordCommand {
                 $discordService->addRole($discordUser['id'], $autoRoles['ranks'][strval($gid)]);
             }
             
+            // add "job" role
+            $jid = intval($user->getJob());
+            if (!empty($jid) && !empty($autoRoles['jobs'][strval($jid)])) {
+                $discordService->consoleLog('SETUP USER ROLE('.strval($jid).') TO('.$autoRoles['jobs'][strval($jid)].')');
+                $discordService->talk($discordService->t('Adding role for job %jobnb% ...', ['%jobnb%' => '#'.strval($user->getJob()),]), $this->data['channel_id']);
+                $discordService->addRole($discordUser['id'], $autoRoles['jobs'][strval($jid)]);
+            }
+            
             // trader ?
             $perm = null;
             try {
