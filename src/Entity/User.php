@@ -65,7 +65,7 @@ class User implements UserInterface
     private $credit = 0.;
     
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="metier", type="integer")
      */
     private $job;
 
