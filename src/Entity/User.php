@@ -63,6 +63,11 @@ class User implements UserInterface
      * @ORM\Column(type="float")
      */
     private $credit = 0.;
+    
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $job;
 
     public function getId(): ?int
     {
@@ -196,5 +201,17 @@ class User implements UserInterface
     public function setCredit(float $credit): self
     {
         throw new Exception('UNSUPPORTED'); // unsupported
+    }
+
+    public function getJob(): ?int
+    {
+        return $this->job;
+    }
+
+    public function setJob(int $job): self
+    {
+        $this->job = $job;
+
+        return $this;
     }
 }
