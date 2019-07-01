@@ -161,6 +161,10 @@
                 <source>Adding role for rank %ranknb% ...</source>
                 <target>Ajout du rôle spécifique %ranknb% ...</target>
             </trans-unit>
+            <trans-unit id="cmd_link_exec_addjob">
+                <source>Adding role for job %jobnb% ...</source>
+                <target>Ajout du rôle spécifique %jobnb% ...</target>
+            </trans-unit>
             <trans-unit id="cmd_link_exec_addtrader">
                 <source>Adding trader role...</source>
                 <target>Ajout du rôle commerce</target>
