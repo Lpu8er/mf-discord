@@ -54,6 +54,7 @@ class Discord {
     const EVENT_VOICE_STATE_UPDATE = 'VOICE_STATE_UPDATE';
     const EVENT_GUILD_MEMBER_ADD = 'GUILD_MEMBER_ADD';
     const EVENT_GUILD_MEMBER_UPDATE = 'GUILD_MEMBER_UPDATE';
+    const EVENT_GUILD_MEMBER_REMOVE = 'GUILD_MEMBER_REMOVE';
     const EVENT_MESSAGE_REACTION_REMOVE = 'MESSAGE_REACTION_REMOVE';
     
     const INTERVAL_MESSAGEQUEUES = 10;
@@ -529,6 +530,9 @@ class Discord {
         } elseif(static::EVENT_PRESENCE_UPDATE === $event) {
             // track username change to enforce server-side nickname
             $o = DiscordCommands\DiscordCommand::load('enforceNickname', [], $data, true);
+            $o->execute($this);
+        } elseif(static::EVENT_GUILD_MEMBER_REMOVE === $event) {
+            $o = DiscordCommands\DiscordCommand::load('goodbye', [], $data, true);
             $o->execute($this);
         } elseif(in_array($event, [
             static::EVENT_TYPING_START,

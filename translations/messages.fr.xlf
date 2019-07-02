@@ -169,6 +169,10 @@
                 <source>Adding trader role...</source>
                 <target>Ajout du rôle commerce</target>
             </trans-unit>
+            <trans-unit id="cmd_goodbye_exec">
+                <source>%u% has left...</source>
+                <target>%u% est parti...</target>
+            </trans-unit>
             <!-- <trans-unit id="">
                 <source></source>
                 <target></target>
