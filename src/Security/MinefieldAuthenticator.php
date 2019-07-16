@@ -64,12 +64,25 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
     
     /**
      *
+     * @var type 
+     */
+    protected $sessionManager = null;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $oldSessionId = null;
+    
+    /**
+     *
      * @var LoggerInterface 
      */
     protected $logger = null;
 
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, $authenticatorPath, $authenticatorPasskey, $authenticatorCoreKey, $authenticatorSyskey, $authenticatorCookieId) {
+    public function __construct(EntityManagerInterface $em, \Symfony\Component\HttpFoundation\Session\SessionInterface $sessionManager, LoggerInterface $logger, $authenticatorPath, $authenticatorPasskey, $authenticatorCoreKey, $authenticatorSyskey, $authenticatorCookieId) {
         $this->em = $em;
+        $this->sessionManager = $sessionManager;
         $this->authenticatorPath = $authenticatorPath;
         $this->authenticatorPasskey = $authenticatorPasskey;
         $this->authenticatorCoreKey = $authenticatorCoreKey;
@@ -84,6 +97,8 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
     public function initialLoad() {
         if(!$this->initiallyLoaded) {
             define('IPS_'.$this->authenticatorPasskey, true);
+            $this->oldSessionId = $this->sessionManager->getId();
+            $this->sessionManager->setId($request->cookies->get($this->authenticatorCookieId));
             require_once $this->authenticatorPath;
             try {
                 \IPS\Session\Front::i();
