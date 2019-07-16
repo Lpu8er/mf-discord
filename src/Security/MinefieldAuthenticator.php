@@ -101,7 +101,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * 
      * @return array|null
      */
-    public function getCurrentForumData(): ?array {
+    public function getCurrentForumData() {
         $this->initialLoad();
         return \IPS\Member::loggedIn();
     }
@@ -133,9 +133,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
         $this->initialLoad();
         $returns = [];
         try {
-            $this->logger->debug('Into get credentials');
             $mf = $this->getCurrentForumData();
-            $this->logger->debug('Got current mf data');
             if(!empty($mf) && !empty($mf['member_id'])) {
                 $this->logger->debug('Member ID');
                 $ext = $this->em->getRepository(ExternalIdentifier::class)->findOneBy([
@@ -143,7 +141,6 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
                     'sysval' => $credentials['member_id'],
                     'status' => ExternalIdentifier::STATUS_VALIDATED,
                 ]);
-                $this->logger->debug('Find one by fine');
                 if(!empty($ext)) {
                     $this->logger->debug('get MCUID');
                     $mcuid = $ext->getMcuid();
