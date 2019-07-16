@@ -64,7 +64,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
     
     /**
      *
-     * @var type 
+     * @var \Symfony\Component\HttpFoundation\Session\SessionInterface 
      */
     protected $sessionManager = null;
     
@@ -73,6 +73,12 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * @var string
      */
     protected $oldSessionId = null;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $newSessionId = null;
     
     /**
      *
@@ -98,7 +104,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
         if(!$this->initiallyLoaded) {
             define('IPS_'.$this->authenticatorPasskey, true);
             $this->oldSessionId = $this->sessionManager->getId();
-            $this->sessionManager->setId($request->cookies->get($this->authenticatorCookieId));
+            $this->sessionManager->setId($this->newSessionId);
             require_once $this->authenticatorPath;
             try {
                 \IPS\Session\Front::i();
@@ -117,7 +123,6 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * @return array|null
      */
     public function getCurrentForumData(): ?array {
-        $this->initialLoad();
         $data = [];
         try {
             foreach(\IPS\Member::loggedIn()->profileFields() as $k => $v) {
@@ -140,7 +145,6 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * @return string|null
      */
     public function getCurrentForumId(): ?string {
-        $this->initialLoad();
         $d = $this->getCurrentForumData();
         return empty($d)? null:$d['member_id'];
     }
@@ -159,6 +163,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * be passed to getUser() as $credentials.
      */
     public function getCredentials(Request $request) {
+        $this->newSessionId = $request->cookies->get($this->authenticatorCookieId);
         $this->initialLoad();
         $returns = [];
         try {
