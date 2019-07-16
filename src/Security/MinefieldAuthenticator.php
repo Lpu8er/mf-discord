@@ -136,7 +136,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
         $returns = [];
         try {
             $this->logger->debug('Into get credentials');
-            $mf = $this->getForumCurrent();
+            $mf = $this->getCurrentForumData();
             if(!empty($mf) && !empty($mf['member_id'])) {
                 $this->logger->debug('Member ID');
                 $ext = $this->em->getRepository(ExternalIdentifier::class)->findOneBy([
@@ -176,7 +176,6 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
     }
 
     public function checkCredentials($credentials, UserInterface $user) {
-        $this->initialLoad();
         return !empty($credentials['mcuid']);
     }
 
@@ -185,11 +184,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception) {
-        $data = [
-            'message' => 'Nope',
-        ];
-
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
+        return null;
     }
 
     /**
