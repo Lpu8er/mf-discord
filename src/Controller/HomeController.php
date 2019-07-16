@@ -31,17 +31,10 @@ class HomeController extends BaseController
      */
     public function discord() {
         $u = $this->getUser();
-        $code = $this->groom->prepareLinkCode($u);
-        
-        $ups = [];
-        for($i = 0; $i<50; $i++) {
-            $ups[] = $this->groom->generatePseudoRandom();
-        }
         
         return $this->render('home/discord.html.twig', [
             'errors' => [],
-            'code' => $code,
-            'ups' => $ups,
+            'user' => $u,
         ]);
     }
     

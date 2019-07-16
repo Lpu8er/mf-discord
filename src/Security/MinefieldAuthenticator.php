@@ -4,6 +4,7 @@ namespace App\Security;
 use App\Entity\ExternalIdentifier;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,15 +61,40 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * @var bool
      */
     protected $initiallyLoaded = false;
+    
+    /**
+     *
+     * @var \Symfony\Component\HttpFoundation\Session\SessionInterface 
+     */
+    protected $sessionManager = null;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $oldSessionId = null;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $newSessionId = null;
+    
+    /**
+     *
+     * @var LoggerInterface 
+     */
+    protected $logger = null;
 
-    public function __construct(EntityManagerInterface $em, $authenticatorPath, $authenticatorPasskey, $authenticatorCoreKey, $authenticatorSyskey, $authenticatorCookieId) {
+    public function __construct(EntityManagerInterface $em, \Symfony\Component\HttpFoundation\Session\SessionInterface $sessionManager, LoggerInterface $logger, $authenticatorPath, $authenticatorPasskey, $authenticatorCoreKey, $authenticatorSyskey, $authenticatorCookieId) {
         $this->em = $em;
+        $this->sessionManager = $sessionManager;
         $this->authenticatorPath = $authenticatorPath;
         $this->authenticatorPasskey = $authenticatorPasskey;
         $this->authenticatorCoreKey = $authenticatorCoreKey;
         $this->authenticatorSyskey = $authenticatorSyskey;
         $this->authenticatorCookieId = $authenticatorCookieId;
-        
+        $this->logger = $logger;
     }
     
     /**
@@ -77,8 +103,16 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
     public function initialLoad() {
         if(!$this->initiallyLoaded) {
             define('IPS_'.$this->authenticatorPasskey, true);
+            $this->oldSessionId = $this->sessionManager->getId();
+            $this->sessionManager->setId($this->newSessionId);
             require_once $this->authenticatorPath;
-            \IPS\Session\Front::i();
+            try {
+                \IPS\Session\Front::i();
+            } catch(\Exception $e) {
+                $this->logger->error('ERROR ON initialLoad : '.$e->getMessage());
+            } catch(\Error $er) {
+                $this->logger->error('PHP ERROR ON initialLoad : '.$er->getMessage());
+            }
             $this->initiallyLoaded = true;
         }
         return $this;
@@ -89,7 +123,22 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * @return array|null
      */
     public function getCurrentForumData(): ?array {
-        return \IPS\Member::loggedIn();
+        $data = [];
+        try {
+            $pd = \IPS\Member::loggedIn();
+            foreach($pd->profileFields() as $k => $v) {
+                $sk = preg_replace('`^core_p`', '', $k);
+                $data[$k] = $v;
+                $data[$sk] = $v;
+            }
+            $data['member_id'] = $pd->member_id;
+            $data['name'] = $pd->name;
+        } catch(\Exception $e) {
+            $this->logger->error('ERROR ON getCurrentForumData : '.$e->getMessage());
+        } catch(\Error $er) {
+            $this->logger->error('PHP ERROR ON getCurrentForumData : '.$er->getMessage());
+        }
+        return $data;
     }
     
     /**
@@ -115,9 +164,11 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * be passed to getUser() as $credentials.
      */
     public function getCredentials(Request $request) {
+        $this->newSessionId = $request->cookies->get($this->authenticatorCookieId);
+        $this->initialLoad();
         $returns = [];
         try {
-            $mf = $this->getForumCurrent();
+            $mf = $this->getCurrentForumData();
             if(!empty($mf) && !empty($mf['member_id'])) {
                 $ext = $this->em->getRepository(ExternalIdentifier::class)->findOneBy([
                     'syskey' => $this->authenticatorSyskey,
@@ -131,21 +182,28 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
                     }
                 }
             }
-        } catch(Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
+        } catch(\Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
+            $this->logger->error('Get credentials = '.$e->getMessage());
+            $returns = [];
+        } catch(\Error $er) {
+            $this->logger->error('PHP ERROR ON getCredentials : '.$er->getMessage());
             $returns = [];
         }
-        
         return $returns;
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider) {
         $returns = null;
+        $this->initialLoad();
         try {
             if(!empty($credentials['mcuid'])) {
                 $returns = $this->em->getRepository(User::class)->findOneBy(['mcuid' => $credentials['mcuid'],]);
             }
-        } catch(Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
-            $returns = null;
+        } catch(\Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
+            $this->logger->error('Get user = '.$e->getMessage());
+        } catch(\Error $er) {
+            $this->logger->error('PHP ERROR ON getUser : '.$er->getMessage());
+            $returns = [];
         }
         return $returns;
     }
@@ -159,17 +217,14 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception) {
-        $data = [
-            'message' => 'Nope',
-        ];
-
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
+        return null;
     }
 
     /**
      * Called when authentication is needed, but it's not sent
      */
     public function start(Request $request, AuthenticationException $authException = null) {
+        $this->initialLoad();
         $data = [
             'message' => 'Authentication Required'
         ];
