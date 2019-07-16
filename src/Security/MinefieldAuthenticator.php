@@ -125,14 +125,16 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
     public function getCurrentForumData(): ?array {
         $data = [];
         try {
-            $this->logger->error('DUMP = '.var_export(\IPS\Member::loggedIn(), true));
-            foreach(\IPS\Member::loggedIn()->profileFields() as $k => $v) {
+            //$pd = \IPS\Member::loggedIn();
+            $pd = \IPS\Session::i()->member;
+            $this->logger->error('DUMP = '.var_export($pd, true));
+            foreach($pd->profileFields() as $k => $v) {
                 $sk = preg_replace('`^core_p`', '', $k);
                 $data[$k] = $v;
                 $data[$sk] = $v;
             }
-            $data['member_id'] = \IPS\Member::loggedIn()->member_id;
-            $data['name'] = \IPS\Member::loggedIn()->name;
+            $data['member_id'] = $pd->member_id;
+            $data['name'] = $pd->name;
         } catch(\Exception $e) {
             $this->logger->error('ERROR ON getCurrentForumData : '.$e->getMessage());
         } catch(\Error $er) {
