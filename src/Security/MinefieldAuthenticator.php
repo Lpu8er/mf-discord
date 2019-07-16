@@ -4,6 +4,7 @@ namespace App\Security;
 use App\Entity\ExternalIdentifier;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,15 +61,21 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * @var bool
      */
     protected $initiallyLoaded = false;
+    
+    /**
+     *
+     * @var LoggerInterface 
+     */
+    protected $logger = null;
 
-    public function __construct(EntityManagerInterface $em, $authenticatorPath, $authenticatorPasskey, $authenticatorCoreKey, $authenticatorSyskey, $authenticatorCookieId) {
+    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, $authenticatorPath, $authenticatorPasskey, $authenticatorCoreKey, $authenticatorSyskey, $authenticatorCookieId) {
         $this->em = $em;
         $this->authenticatorPath = $authenticatorPath;
         $this->authenticatorPasskey = $authenticatorPasskey;
         $this->authenticatorCoreKey = $authenticatorCoreKey;
         $this->authenticatorSyskey = $authenticatorSyskey;
         $this->authenticatorCookieId = $authenticatorCookieId;
-        
+        $this->logger = $logger;
     }
     
     /**
@@ -76,6 +83,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      */
     public function initialLoad() {
         if(!$this->initiallyLoaded) {
+            $this->logger->debug('Initial load');
             define('IPS_'.$this->authenticatorPasskey, true);
             require_once $this->authenticatorPath;
             \IPS\Session\Front::i();
@@ -135,7 +143,8 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
                     }
                 }
             }
-        } catch(Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
+        } catch(\Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
+            $this->logger->error('Get credentials = '.$e->getMessage());
             $returns = [];
         }
         
@@ -150,7 +159,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
                 $returns = $this->em->getRepository(User::class)->findOneBy(['mcuid' => $credentials['mcuid'],]);
             }
         } catch(Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
-            $returns = null;
+            $this->logger->error('Get user = '.$e->getMessage());
         }
         return $returns;
     }
