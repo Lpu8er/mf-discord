@@ -85,9 +85,16 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
         if(!$this->initiallyLoaded) {
             $this->logger->debug('Initial load');
             define('IPS_'.$this->authenticatorPasskey, true);
+            $this->logger->debug('Require path');
             require_once $this->authenticatorPath;
-            \IPS\Session\Front::i();
+            $this->logger->debug('Start front');
+            try {
+                \IPS\Session\Front::i();
+            } catch(\Exception $e) {
+                $this->logger->error('ERROR ON LOAD : '.$e->getMessage());
+            }
             $this->initiallyLoaded = true;
+            $this->logger->debug('Initial loaded');
         }
         return $this;
     }
@@ -117,7 +124,6 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * to be skipped.
      */
     public function supports(Request $request) {
-        $this->initialLoad();
         return $request->cookies->has($this->authenticatorCookieId);
     }
 
