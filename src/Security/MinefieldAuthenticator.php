@@ -104,7 +104,11 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
         if(!$this->initiallyLoaded) {
             define('IPS_'.$this->authenticatorPasskey, true);
             $this->oldSessionId = $this->sessionManager->getId();
+            $this->logger->debug('Old session ID = '.$this->oldSessionId);
+            $this->logger->debug('New session ID = '.$this->newSessionId);
             $this->sessionManager->setId($this->newSessionId);
+            $rsid = @session_id();
+            $this->logger->debug('CURRENT SID = '.$this->sessionManager->getId().' ('.$rsid.')');
             require_once $this->authenticatorPath;
             try {
                 \IPS\Session\Front::i();
