@@ -88,9 +88,9 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
             try {
                 \IPS\Session\Front::i();
             } catch(\Exception $e) {
-                $this->logger->error('ERROR ON LOAD : '.$e->getMessage());
+                $this->logger->error('ERROR ON initialLoad : '.$e->getMessage());
             } catch(\Error $er) {
-                $this->logger->error('PHP ERROR ON LOAD : '.$er->getMessage());
+                $this->logger->error('PHP ERROR ON initialLoad : '.$er->getMessage());
             }
             $this->initiallyLoaded = true;
         }
@@ -101,9 +101,23 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * 
      * @return array|null
      */
-    public function getCurrentForumData() {
+    public function getCurrentForumData(): ?array {
         $this->initialLoad();
-        return \IPS\Member::loggedIn();
+        $data = [];
+        try {
+            foreach(\IPS\Member::loggedIn()->profileFields() as $k => $v) {
+                $sk = preg_replace('`^core_p`', '', $k);
+                $data[$k] = $v;
+                $data[$sk] = $v;
+            }
+            $data['member_id'] = \IPS\Member::loggedIn()->member_id;
+            $data['name'] = \IPS\Member::loggedIn()->name;
+        } catch(\Exception $e) {
+            $this->logger->error('ERROR ON getCurrentForumData : '.$e->getMessage());
+        } catch(\Error $er) {
+            $this->logger->error('PHP ERROR ON getCurrentForumData : '.$er->getMessage());
+        }
+        return $data;
     }
     
     /**
@@ -154,7 +168,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
             $this->logger->error('Get credentials = '.$e->getMessage());
             $returns = [];
         } catch(\Error $er) {
-            $this->logger->error('PHP ERROR ON LOAD : '.$er->getMessage());
+            $this->logger->error('PHP ERROR ON getCredentials : '.$er->getMessage());
             $returns = [];
         }
         $this->logger->debug('til the end');
@@ -171,7 +185,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
         } catch(\Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
             $this->logger->error('Get user = '.$e->getMessage());
         } catch(\Error $er) {
-            $this->logger->error('PHP ERROR ON LOAD : '.$er->getMessage());
+            $this->logger->error('PHP ERROR ON getUser : '.$er->getMessage());
             $returns = [];
         }
         return $returns;
