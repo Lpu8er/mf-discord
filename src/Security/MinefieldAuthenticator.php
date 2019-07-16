@@ -179,6 +179,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
         $returns = null;
         $this->initialLoad();
         try {
+            $this->logger->debug('Credentials = '.var_export($credentials, true));
             if(!empty($credentials['mcuid'])) {
                 $returns = $this->em->getRepository(User::class)->findOneBy(['mcuid' => $credentials['mcuid'],]);
             }
