@@ -83,18 +83,16 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      */
     public function initialLoad() {
         if(!$this->initiallyLoaded) {
-            $this->logger->debug('Initial load');
             define('IPS_'.$this->authenticatorPasskey, true);
-            $this->logger->debug('Require path');
             require_once $this->authenticatorPath;
-            $this->logger->debug('Start front');
             try {
                 \IPS\Session\Front::i();
             } catch(\Exception $e) {
                 $this->logger->error('ERROR ON LOAD : '.$e->getMessage());
+            } catch(\Error $er) {
+                $this->logger->error('PHP ERROR ON LOAD : '.$er->getMessage());
             }
             $this->initiallyLoaded = true;
-            $this->logger->debug('Initial loaded');
         }
         return $this;
     }
@@ -137,6 +135,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
         try {
             $this->logger->debug('Into get credentials');
             $mf = $this->getCurrentForumData();
+            $this->logger->debug('Got current mf data');
             if(!empty($mf) && !empty($mf['member_id'])) {
                 $this->logger->debug('Member ID');
                 $ext = $this->em->getRepository(ExternalIdentifier::class)->findOneBy([
@@ -157,6 +156,9 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
         } catch(\Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
             $this->logger->error('Get credentials = '.$e->getMessage());
             $returns = [];
+        } catch(\Error $er) {
+            $this->logger->error('PHP ERROR ON LOAD : '.$er->getMessage());
+            $returns = [];
         }
         $this->logger->debug('til the end');
         return $returns;
@@ -171,6 +173,9 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
             }
         } catch(\Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
             $this->logger->error('Get user = '.$e->getMessage());
+        } catch(\Error $er) {
+            $this->logger->error('PHP ERROR ON LOAD : '.$er->getMessage());
+            $returns = [];
         }
         return $returns;
     }
