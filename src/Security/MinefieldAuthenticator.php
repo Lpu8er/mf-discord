@@ -89,6 +89,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * @return array|null
      */
     public function getCurrentForumData(): ?array {
+        $this->initialLoad();
         return \IPS\Member::loggedIn();
     }
     
@@ -97,6 +98,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * @return string|null
      */
     public function getCurrentForumId(): ?string {
+        $this->initialLoad();
         $d = $this->getCurrentForumData();
         return empty($d)? null:$d['member_id'];
     }
@@ -107,6 +109,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * to be skipped.
      */
     public function supports(Request $request) {
+        $this->initialLoad();
         return $request->cookies->has($this->authenticatorCookieId);
     }
 
@@ -115,6 +118,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * be passed to getUser() as $credentials.
      */
     public function getCredentials(Request $request) {
+        $this->initialLoad();
         $returns = [];
         try {
             $mf = $this->getForumCurrent();
@@ -140,6 +144,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
 
     public function getUser($credentials, UserProviderInterface $userProvider) {
         $returns = null;
+        $this->initialLoad();
         try {
             if(!empty($credentials['mcuid'])) {
                 $returns = $this->em->getRepository(User::class)->findOneBy(['mcuid' => $credentials['mcuid'],]);
@@ -151,6 +156,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
     }
 
     public function checkCredentials($credentials, UserInterface $user) {
+        $this->initialLoad();
         return !empty($credentials['mcuid']);
     }
 
@@ -170,6 +176,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * Called when authentication is needed, but it's not sent
      */
     public function start(Request $request, AuthenticationException $authException = null) {
+        $this->initialLoad();
         $data = [
             'message' => 'Authentication Required'
         ];
