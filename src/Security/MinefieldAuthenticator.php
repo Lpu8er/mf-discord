@@ -4,7 +4,6 @@ namespace App\Security;
 use App\Entity\ExternalIdentifier;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,21 +60,14 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      * @var bool
      */
     protected $initiallyLoaded = false;
-    
-    /**
-     *
-     * @var LoggerInterface 
-     */
-    protected $logger = null;
 
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, $authenticatorPath, $authenticatorPasskey, $authenticatorCoreKey, $authenticatorSyskey, $authenticatorCookieId) {
+    public function __construct(EntityManagerInterface $em, $authenticatorPath, $authenticatorPasskey, $authenticatorCoreKey, $authenticatorSyskey, $authenticatorCookieId) {
         $this->em = $em;
         $this->authenticatorPath = $authenticatorPath;
         $this->authenticatorPasskey = $authenticatorPasskey;
         $this->authenticatorCoreKey = $authenticatorCoreKey;
         $this->authenticatorSyskey = $authenticatorSyskey;
         $this->authenticatorCookieId = $authenticatorCookieId;
-        $this->logger = $logger;
     }
     
     /**
@@ -83,7 +75,6 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      */
     public function initialLoad() {
         if(!$this->initiallyLoaded) {
-            $this->logger->debug('Initial load');
             define('IPS_'.$this->authenticatorPasskey, true);
             require_once $this->authenticatorPath;
             \IPS\Session\Front::i();
@@ -128,7 +119,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
     public function getCredentials(Request $request) {
         $this->initialLoad();
         $returns = [];
-        try {
+        /* try { */
             $mf = $this->getForumCurrent();
             if(!empty($mf) && !empty($mf['member_id'])) {
                 $ext = $this->em->getRepository(ExternalIdentifier::class)->findOneBy([
@@ -143,10 +134,9 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
                     }
                 }
             }
-        } catch(\Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
-            $this->logger->error('Get credentials = '.$e->getMessage());
+        /* } catch(\Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
             $returns = [];
-        }
+        } */
         
         return $returns;
     }
@@ -154,13 +144,13 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
     public function getUser($credentials, UserProviderInterface $userProvider) {
         $returns = null;
         $this->initialLoad();
-        try {
+        /* try { */
             if(!empty($credentials['mcuid'])) {
                 $returns = $this->em->getRepository(User::class)->findOneBy(['mcuid' => $credentials['mcuid'],]);
             }
-        } catch(\Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
-            $this->logger->error('Get user = '.$e->getMessage());
-        }
+        /* } catch(\Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
+            
+        } */
         return $returns;
     }
 
