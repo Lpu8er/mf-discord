@@ -125,9 +125,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
     public function getCurrentForumData(): ?array {
         $data = [];
         try {
-            //$pd = \IPS\Member::loggedIn();
-            $pd = \IPS\Session::i()->member;
-            $this->logger->error('DUMP = '.var_export($pd, true));
+            $pd = \IPS\Member::loggedIn();
             foreach($pd->profileFields() as $k => $v) {
                 $sk = preg_replace('`^core_p`', '', $k);
                 $data[$k] = $v;
@@ -172,17 +170,14 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
         try {
             $mf = $this->getCurrentForumData();
             if(!empty($mf) && !empty($mf['member_id'])) {
-                $this->logger->debug('Member ID');
                 $ext = $this->em->getRepository(ExternalIdentifier::class)->findOneBy([
                     'syskey' => $this->authenticatorSyskey,
                     'sysval' => $credentials['member_id'],
                     'status' => ExternalIdentifier::STATUS_VALIDATED,
                 ]);
                 if(!empty($ext)) {
-                    $this->logger->debug('get MCUID');
                     $mcuid = $ext->getMcuid();
                     if(!empty($mcuid)) {
-                        $this->logger->debug('all clear');
                         $returns['mcuid'] = $mcuid;
                     }
                 }
@@ -194,7 +189,6 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
             $this->logger->error('PHP ERROR ON getCredentials : '.$er->getMessage());
             $returns = [];
         }
-        $this->logger->debug('til the end');
         return $returns;
     }
 
@@ -202,7 +196,6 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
         $returns = null;
         $this->initialLoad();
         try {
-            $this->logger->debug('Credentials = '.var_export($credentials, true));
             if(!empty($credentials['mcuid'])) {
                 $returns = $this->em->getRepository(User::class)->findOneBy(['mcuid' => $credentials['mcuid'],]);
             }
