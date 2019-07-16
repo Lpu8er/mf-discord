@@ -83,6 +83,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
      */
     public function initialLoad() {
         if(!$this->initiallyLoaded) {
+            $this->logger->debug('Initial load');
             define('IPS_'.$this->authenticatorPasskey, true);
             require_once $this->authenticatorPath;
             \IPS\Session\Front::i();
