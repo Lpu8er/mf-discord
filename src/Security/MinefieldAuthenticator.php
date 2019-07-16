@@ -158,7 +158,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
             if(!empty($credentials['mcuid'])) {
                 $returns = $this->em->getRepository(User::class)->findOneBy(['mcuid' => $credentials['mcuid'],]);
             }
-        } catch(Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
+        } catch(\Exception $e) { // if anything happens, that means some spice is in there, so silently terminate it.
             $this->logger->error('Get user = '.$e->getMessage());
         }
         return $returns;
