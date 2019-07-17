@@ -11,9 +11,6 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            guard:
-                authenticators:
-                    - App\Security\MinefieldAuthenticator
             anonymous: ~
             
     access_control:
