@@ -172,7 +172,7 @@ class MinefieldAuthenticator extends AbstractGuardAuthenticator {
             if(!empty($mf) && !empty($mf['member_id'])) {
                 $ext = $this->em->getRepository(ExternalIdentifier::class)->findOneBy([
                     'syskey' => $this->authenticatorSyskey,
-                    'sysval' => $credentials['member_id'],
+                    'sysval' => $mf['member_id'],
                     'status' => ExternalIdentifier::STATUS_VALIDATED,
                 ]);
                 if(!empty($ext)) {
