@@ -27,17 +27,6 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
     
-    App\Security\MinefieldAuthenticator:
-        arguments:
-            $authenticatorPath: '%env(FORUM_AUTH_PATH)%'
-            $authenticatorPasskey: '%env(FORUM_AUTH_PASSKEY)%'
-            $authenticatorCoreKey: '%env(FORUM_AUTH_COREKEY)%'
-            $authenticatorSyskey: '%env(FORUM_AUTH_SYSKEY)%'
-            $authenticatorCookieId: '%env(FORUM_AUTH_COOKIEID)%'
-    
-    App\Service\CodexManager:
-        arguments: ['%kernel.project_dir%', '%uri.codex%']
-
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     discord:
@@ -78,17 +67,5 @@ services:
             $autoRoles: '%env(json:DISCORD_AUTO_ROLES)%'
             $sayHello: '%env(DISCORD_HELLO)%'
     
-    discordgroom:
-        class: App\Service\DiscordGroom
-        arguments:
-            $uri: '%env(DISCORD_URL)%'
-            $token: '%env(DISCORD_TOKEN)%'
-            $scope: '%env(DISCORD_BOT_SCOPE)%'
-            $guildId: '%env(DISCORD_GUILD_ID)%'
-            $baseChannel: '%env(DISCORD_BOT_CHANNEL)%'
-            $maxAge: 3600
-            $linkCodeSalt: '%env(DISCORD_SALT_LINKCODE)%'
-    
     App\Service\Discord: '@discord'
-    App\Service\DiscordGroom: '@discordgroom'
     
