@@ -173,6 +173,10 @@
                 <source>%u% has left...</source>
                 <target>%u% est parti...</target>
             </trans-unit>
+            <trans-unit id="cmd_link_exec_addflavor">
+                <source>Adding role for flavor %flavornb% ...</source>
+                <target>Ajout du rôle spécifique %flavornb% ...</target>
+            </trans-unit>
             <!-- <trans-unit id="">
                 <source></source>
                 <target></target>
