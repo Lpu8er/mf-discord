@@ -149,6 +149,25 @@ class DiscordLinkCommand extends DiscordCommand {
                     $discordService->addRole($discordUser['id'], $autoRoles['trader']);
                 }
             }
+            
+            // flavors ?
+            $flavors = [];
+            try {
+                $flavors = $discordService->getEntityManager()->getRepository(\App\Entity\FlavoredUser::class)->findBy(['user' => $user->getId(),]);
+            } catch (Exception $e) {
+                $discordService->getLogger()->critical($e->getMessage());
+                $discordService->getLogger()->critical($e->getTraceAsString());
+                $flavors = [];
+            }
+            if (!empty($flavors) && !empty($autoRoles['flavors'])) { // yup.
+                foreach($flavors as $flavor) {
+                    $fid = strval($flavor->getFlavor());
+                    if(array_key_exists($fid, $autoRoles['flavors'])) {
+                        $discordService->talk($discordService->t('Adding role for flavor %flavornb% ...', ['%flavornb%' => '#'.$fid,]), $this->data['channel_id']);
+                        $discordService->addRole($discordUser['id'], $autoRoles['flavors'][$fid]);
+                    }
+                }
+            }
         }
     }
 
