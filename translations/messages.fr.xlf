@@ -177,7 +177,7 @@
                 <source>Adding role for flavor %flavornb% ...</source>
                 <target>Ajout du rôle spécifique %flavornb% ...</target>
             </trans-unit>
-            <trans-unit id="cmd_link_exec_addflavor">
+            <trans-unit id="cmd_link_exec_addflavored">
                 <source>Adding base role for flavored ...</source>
                 <target>Ajout du rôle scribe ...</target>
             </trans-unit>
