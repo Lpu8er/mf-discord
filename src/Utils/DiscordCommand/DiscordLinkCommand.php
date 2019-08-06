@@ -46,6 +46,9 @@ class DiscordLinkCommand extends DiscordCommand {
                         $userRepo = $discordService->getEntityManager()->getRepository(User::class);
                         try {
                             $u = $userRepo->findOneBy(['discordLinkCode' => $sub,]);
+                            if(!empty($u)) {
+                                $discordService->getEntityManager()->refresh($u);
+                            }
                         } catch (Exception $e) {
                             $discordService->getLogger()->critical($e->getMessage());
                             $discordService->getLogger()->critical($e->getTraceAsString());
