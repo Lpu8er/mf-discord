@@ -794,7 +794,7 @@ class Discord {
             'Authorization' => 'Bot '.$this->token,
         ]);
         if(!$rr->isValid()) {
-            $this->consoleLog('Failed ro remove role '.$roleId.' from user '.$userId);
+            $this->consoleLog('Failed ro remove role '.$roleId.' from user '.$userId.' ('.var_export($rr->getContent(), true).')');
         }
     }
     
@@ -808,7 +808,7 @@ class Discord {
             'Authorization' => 'Bot '.$this->token,
         ]);
         if(!$rr->isValid()) {
-            $this->consoleLog('Failed to add role '.$roleId.' to user '.$userId);
+            $this->consoleLog('Failed to add role '.$roleId.' to user '.$userId.' ('.var_export($rr->getContent(), true).')');
         }
     }
     
@@ -824,7 +824,7 @@ class Discord {
             'Authorization' => 'Bot '.$this->token,
         ]);
         if(!$rr->isValid()) {
-            $this->consoleLog('Failed to rename member '.$userId.' to name "'.$newName.'" (error '.$rr->getCode().')');
+            $this->consoleLog('Failed to rename member '.$userId.' to name "'.$newName.'" (error '.$rr->getCode().') ('.var_export($rr->getContent(), true).')');
         }
     }
     
