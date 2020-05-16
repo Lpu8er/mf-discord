@@ -189,7 +189,7 @@ class DiscordLinkCommand extends DiscordCommand {
         $em = $discordService->getEntityManager();
         $userRepo = $em->getRepository(User::class);
         try {
-            $u = $userRepo->findOneBy(['discord_link_code' => $code,]);
+            $u = $userRepo->findOneBy(['discordLinkCode' => $code,]);
             if(!empty($u)) {
                 $u->setDiscordLinkCode(null);
                 $em->persist($u);
