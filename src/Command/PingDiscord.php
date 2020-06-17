@@ -4,6 +4,7 @@ namespace App\Command;
 use App\Entity\MessageQueue;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -23,16 +24,25 @@ class PingDiscord extends Command {
 
     protected function configure() {
         $this->setName('discord:ping')
-                ->addArgument('channel', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Channel ID')
-                ->addArgument('message', \Symfony\Component\Console\Input\InputArgument::REQUIRED, 'Message');
+                ->addArgument('channel', InputArgument::REQUIRED, 'Channel ID')
+                ->addArgument('message', InputArgument::REQUIRED, 'Message')
+                ->addArgument('color', InputArgument::OPTIONAL, 'Color');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         $output->write('Pinging');
-        $this->em->getRepository(MessageQueue::class)->register('ping', [], [
+        $msgData = [
             'channel' => $input->getArgument('channel'),
             'message' => $input->getArgument('message'),
-        ]);
+        ];
+        if($input->hasArgument('color')) {
+            $msgData['embed'] = [
+                'title' => 'test embed',
+                'description' => $msgData['message'],
+                'color' => hexdec($input->getArgument('color')),
+            ];
+        }
+        $this->em->getRepository(MessageQueue::class)->register('ping', [], $msgData);
         $output->writeln(' pinged.');
     }
 }
