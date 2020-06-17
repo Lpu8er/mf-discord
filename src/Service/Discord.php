@@ -689,6 +689,9 @@ class Discord {
             ], [
                 'Authorization' => 'Bot '.$this->token,
             ]);
+            if(!$response->isValid()) {
+                $this->logger->warning('Response code for talk is invalid ('.$response->getCode().')');
+            }
         }
     }
     
