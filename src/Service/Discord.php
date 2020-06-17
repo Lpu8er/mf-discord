@@ -372,6 +372,7 @@ class Discord {
         $connector = new ClientConnector($this->loop, $this->reactConnector);
         $connector($this->gatewayUri)->then([$this, 'onConnect'], [$this, 'onConnectError']);
         $this->loop->run();
+        return $this;
     }
     
     /**
