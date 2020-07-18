@@ -27,10 +27,10 @@ class DiscordRole {
     
     /**
      * 
-     * @ORM\Column(name="name", type="string", length=200, nullable=true)
+     * @ORM\Column(name="linkto", type="string", length=200, nullable=true)
      * @var string
      */
-    private $linkedto = null;
+    private $linkto = null;
     
     public function getRoleid(): string {
         return $this->roleid;
@@ -40,8 +40,8 @@ class DiscordRole {
         return $this->locked;
     }
 
-    public function getLinkedto(): ?string {
-        return $this->linkedto;
+    public function getLinkto(): ?string {
+        return $this->linkto;
     }
     public function setRoleid(string $roleid) {
         $this->roleid = $roleid;
@@ -53,8 +53,8 @@ class DiscordRole {
         return $this;
     }
 
-    public function setLinkedto(?string $linkedto) {
-        $this->linkedto = $linkedto;
+    public function setLinkto(?string $linkedto) {
+        $this->linkto = $linkto;
         return $this;
     }
 }
