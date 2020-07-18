@@ -16,7 +16,7 @@ class DiscordIamCommand extends DiscordCommand {
         if(!empty($linkableRoles)) {
             foreach($linkableRoles as $lr) {
                 $ht .= PHP_EOL;
-                $ht .= '`'.$discordService->getPrefix().'iam '.$lr->getLinkedto().'` : @'.$discordService->getRoleName($lr->getRoleid());
+                $ht .= '`'.$discordService->getPrefix().'iam '.$lr->getLinkto().'` : @'.$discordService->getRoleName($lr->getRoleid());
             }
         } else {
             $ht .= ' *'.$discordService->t('none actually').'*';
