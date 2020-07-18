@@ -29,4 +29,16 @@ class DiscordRoleRepository extends ServiceEntityRepository
                   ->andWhere("r.locked=0")
                   ->getQuery()->getResult();
     }
+    
+    /**
+     * 
+     * @param string $command
+     * @return DiscordRole|null
+     */
+    public function getLinkableRoleByCommand(string $command): ?DiscordRole {
+        return $this->findOneBy([
+            'linkto' => $command,
+            'locked' => false,
+        ]);
+    }
 }

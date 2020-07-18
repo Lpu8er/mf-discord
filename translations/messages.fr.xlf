@@ -181,6 +181,30 @@
                 <source>Adding base role for flavored ...</source>
                 <target>Ajout du rôle scribe ...</target>
             </trans-unit>
+            <trans-unit id="cmd_iam_none">
+                <source>none actually</source>
+                <target>aucun pour le moment</target>
+            </trans-unit>
+            <trans-unit id="cmd_iam_help">
+                <source>gives you a role among the ones available</source>
+                <target>vous attribue un rôle parmi ceux disponibles</target>
+            </trans-unit>
+            <trans-unit id="cmd_iam_done">
+                <source>You now have this role</source>
+                <target>Vous avez désormais ce rôle</target>
+            </trans-unit>
+            <trans-unit id="cmd_iam_unknown">
+                <source>Unknown role</source>
+                <target>Rôle inconnu</target>
+            </trans-unit>
+            <trans-unit id="cmd_iamnot_help">
+                <source>removes you from a role among the ones available</source>
+                <target>vous enlève un rôle parmi ceux disponibles</target>
+            </trans-unit>
+            <trans-unit id="cmd_iamnot_done">
+                <source>You no longer have this role</source>
+                <target>Vous n'avez désormais plus ce rôle</target>
+            </trans-unit>
             <!-- <trans-unit id="">
                 <source></source>
                 <target></target>
