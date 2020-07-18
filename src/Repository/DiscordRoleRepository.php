@@ -26,7 +26,7 @@ class DiscordRoleRepository extends ServiceEntityRepository
     public function getLinkable() {
         $qb = $this->_em->createQueryBuilder('r');
         return $qb->where($qb->expr()->isNotNull("r.linkto"))
-                  ->andWhere("not r.locked")
+                  ->andWhere("r.locked=0")
                   ->getQuery()->getResult();
     }
 }
