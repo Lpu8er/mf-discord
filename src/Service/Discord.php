@@ -509,8 +509,8 @@ class Discord {
             }
             
             foreach($data['roles'] as $role) {
-                $this->rolesCache[$role['id']] = $role['name'];
-                $this->rolesPerms[$role['id']] = $role['permissions'];
+                $this->rolesCache[strval($role['id'])] = $role['name'];
+                $this->rolesPerms[strval($role['id'])] = $role['permissions'];
             }
             
             foreach($data['emojis'] as $emoji) {
@@ -770,6 +770,22 @@ class Discord {
         $returns = null;
         if(!$ignoreCache && in_array($name, $this->rolesCache)) {
             $returns = array_search($name, $this->rolesCache);
+        } else {
+            // @TODO
+        }
+        return $returns;
+    }
+    
+    /**
+     * 
+     * @param mixed $roleId
+     * @param bool $ignoreCache
+     * @return ?string
+     */
+    public function getRoleName($roleId, bool $ignoreCache = false) {
+        $returns = null;
+        if(!$ignoreCache && array_key_exists(strval($roleId), $this->rolesCache)) {
+            $returns = $this->rolesCache[strval($roleId)];
         } else {
             // @TODO
         }
