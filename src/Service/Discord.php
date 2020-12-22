@@ -676,9 +676,10 @@ class Discord {
      * 
      * @param mixed $msg
      * @param ?string $channel
-     * @param array $embeds uncompatible with delay atm
+     * @param array $embeds
+     * @param bool $publish
      */
-    public function talk($msg, $channel = null, array $embeds = []) {
+    public function talk($msg, $channel = null, array $embeds = [], bool $publish = false) {
         if(empty($channel)) { $channel = $this->channel; }
         if($this->delayEnabled) {
             $this->flushableTalks[] = $msg;
@@ -691,6 +692,11 @@ class Discord {
             ]);
             if(!$response->isValid()) {
                 $this->logger->warning('Response code for talk is invalid ('.$response->getCode().')');
+            } elseif($publish) { // message is valid and we need to publish
+                $messageSent = $response->getContent();
+                if(!empty($messageSent['id'])) {
+                    $this->publish($messageSent['id'], $channel);
+                }
             }
         }
     }
@@ -720,6 +726,17 @@ class Discord {
         $response = REST::json($this->uri, '/channels/'.$channel.'/messages', REST::METHOD_POST, [
             'embed' => $ctx,
         ], [
+            'Authorization' => 'Bot '.$this->token,
+        ]);
+    }
+    
+    /**
+     * 
+     * @param string $messageId
+     * @param string $channel
+     */
+    public function publish($messageId, $channel) {
+        $response = REST::json($this->uri, '/channels/'.$channel.'/messages/'.$messageId.'/crosspost', REST::METHOD_POST, [], [
             'Authorization' => 'Bot '.$this->token,
         ]);
     }
